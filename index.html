@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Raccoon Cafe - Yummers</title>
+    <style>
+        body {
+            background-color: #CCD0E6;
+            background-image: url("../images/Purplebg2.jpg");
+            color: #141B3D;
+            background-size: cover;
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: bold;
+            margin: 0;
+        }
+
+        .navbar {
+            background-color: #8690C1;
+            display: flex;
+            /*for horizontal layout*/
+            justify-content: space-between;
+            /*makes the logo stick to the left N the menu to the right*/
+            align-items: center;
+            padding: 10px 20px;
+        }
+
+        .navbar ul {
+            list-style: none;
+            /* erases the bullet points*/
+            display: flex;
+            margin: 0;
+            padding: 15px;
+        }
+
+        .navbar ul li {
+            margin: 0 15px;
+            /* distance between items*/
+        }
+
+        .navbar ul li a {
+            text-decoration: none;
+            font-size: large;
+            font-weight: bolder;
+            padding: 6px 6px;
+            border-radius: 6px;
+            transition: background 0.3s;
+            color: #141B3D;
+        }
+
+        .navbar ul li a:hover {
+            background-color: rgb(95, 107, 167);
+        }
+
+        .navbar .logo {
+            font-weight: bolder;
+            color: #141B3D;
+            font-size: large;
+            margin: 0;
+        }
+
+        .headers {
+            margin-left: 20px;
+        }
+
+        .headers h1 {
+            font-weight: bold;
+            font-size: 30px;
+            margin-top: 30px;
+        }
+
+        .txt {
+            margin-left: 20px;
+        }
+
+        .menubtn {
+            margin-left: 40%;
+            background-color: #8690C1;
+            color: #141B3D;
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: bold;
+            font-size: 50px;
+            border-color: #141B3D;
+            border-style: solid;
+            cursor: pointer;
+            border-radius: 30px;
+            border-width: 4px;
+            transition: opacity 0.5s;
+            padding: 100 200;
+        }
+
+        .menubtn:hover {
+            opacity: 0.75;
+        }
+
+        .menubtn:active {
+            opacity: 0.5;
+        }
+
+        p img {
+            margin-left: 10%;
+            height: 300px;
+            width: 1200px;
+            border-style: solid;
+            border-color: #8690C1;
+            border-width: 10px;
+            border-radius: 50px;
+        }
+    </style>
+
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="logo">I LOVE RACCOONS ⸜(｡˃ ᵕ ˂ )⸝♡</div>
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="pages/about.html">About us</a></li>
+            <li><a href="pages/menu.html">Menu</a></li>
+            <li><a href="pages/shop.html">Shop</a></li>
+            <li><a href="pages/meet.html">Meet the Racs</a></li>
+            <li><a href="pages/gallery.html">Gallery</a></li>
+            <li><a href="pages/news.html">News</a></li>
+        </ul>
+    </nav>
+
+
+    <main>
+        <section>
+            <div class="headers">
+                <h1>  Raccon Cafe !! ------------------------------------------------</h1>
+                <h2>Welcome to Raccoon Cafe - Where Cozy Meets Cute ── .✦</h2>
+            </div>
+        </section>
+
+        <section>
+            <div class="txt">
+                <p>♡ Discover the perfect spot to relax with a warm drink and adorable raccoon friends. Enjoy delicious
+                    coffee, tasty
+                    treats, and a unique experience that will make your day special. Check out the menu by clicking the
+                    button below!! ♡
+                </p>
+            </div>
+        </section>
+
+        <section>
+            <p>
+                <img src="images/Rac_Banner.jpeg" width="500px" alt="Raccoon">
+            </p>
+            <button class="menubtn">
+                ⟡ MENU ⟡</button>
+        </section>
+    </main>
+
+</body>
+
+</html>
