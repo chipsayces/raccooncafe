@@ -5,23 +5,76 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Raccoon Cafe - Yummers</title>
+    <style>
+        body {
+            background-color: #CCD0E6;
+            background-image: url("../images/Purplebg2.jpg");
+            color: #141B3D;
+            background-size: cover;
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: bold;
+            margin: 0;
+        }
+
+        .navbar {
+            background-color: #8690C1;
+            display: flex;
+            /*for horizontal layout*/
+            justify-content: space-between;
+            /*makes the logo stick to the left N the menu to the right*/
+            align-items: center;
+            padding: 10px 20px;
+        }
+
+        .navbar ul {
+            list-style: none;
+            /* erases the bullet points*/
+            display: flex;
+            margin: 0;
+            padding: 15px;
+        }
+
+        .navbar ul li {
+            margin: 0 15px;
+            /* distance between items*/
+        }
+
+        .navbar ul li a {
+            text-decoration: none;
+            font-size: large;
+            font-weight: bolder;
+            padding: 6px 6px;
+            border-radius: 6px;
+            transition: background 0.3s;
+            color: #141B3D;
+        }
+
+        .navbar ul li a:hover {
+            background-color: rgb(95, 107, 167);
+        }
+
+        .navbar .logo {
+            font-weight: bolder;
+            color: #141B3D;
+            font-size: large;
+            margin: 0;
+        }
+    </style>
 </head>
 
 <body>
-    <header>
-    <ul>
-    <nav><a href="../index.html">Home</a></nav>
-    <nav><a href="about.html">About us</a></nav>
-    <nav><a href="menu.html">Menu</a></nav>
-    <nav><a href="shop.html">Shop</a></nav>
-    <nav><a href="meet.html">Meet the Raccoons</a></nav>
-    <nav><a href="gallery.html">Gallery</a></nav>
-    <nav><a href="news.html">News</a></nav>
-    <nav><a href="loca.html">Location</a></nav>
-    <nav><a href="res.html">Reservations</a></nav>
-    <nav><a href="pnf.html">Policies N FAQS</a></nav>
-    </ul>
-    </header>
+    <nav class="navbar">
+        <div class="logo">I LOVE RACCOONS ⸜(｡˃ ᵕ ˂ )⸝♡</div>
+        <ul>
+            <li><a href="../index.html">Home</a></li>
+            <li><a href="about.html">About us</a></li>
+            <li><a href="menu.html">Menu</a></li>
+            <li><a href="shop.html">Shop</a></li>
+            <li><a href="meet.html">Meet the Racs</a></li>
+            <li><a href="gallery.html">Gallery</a></li>
+            <li><a href="news.html">News</a></li>
+        </ul>
+    </nav>
 
 
     <main>
