@@ -59,6 +59,59 @@
             font-size: large;
             margin: 0;
         }
+
+        .headers {
+            margin-left: 20px;
+            font-size: 13px;
+        }
+
+        .headers h1 {
+            font-weight: bold;
+            font-size: 30px;
+            margin-top: 30px;
+        }
+
+        .txt {
+            margin-left: 20px;
+            margin-top: 30px;
+        }
+
+        .rac1 {
+            margin-left: 90px;
+            margin-top: 50px;
+            width: 300px;
+            border-color: #8690C1;
+            border-width: 8px;
+            border-style: solid;
+            height: 300px;
+            border-radius: 50px;
+            transition: width 2s, height 2s;
+            cursor: pointer;
+            position: absolute;
+            top: 220px;
+            left: 64%;
+        }
+
+        .rac2 {
+            margin-left: 90px;
+            margin-top: 50px;
+            width: 300px;
+            border-color: #8690C1;
+            border-width: 8px;
+            border-style: solid;
+            height: 300px;
+            border-radius: 50px;
+            transition: width 2s, height 2s;
+            cursor: pointer;
+            position: absolute;
+            top: 220px;
+            left: 36%;
+        }
+
+        .moretxt {
+            margin-left: 20px;
+            margin-top: 120px;
+        }
     </style>
 </head>
 
@@ -77,26 +130,50 @@
     </nav>
 
     <main>
-    <h1>MENU! >:D</h1>
-    <h2>From handcrafted coffees and teas to fresh pastries and light bites, our menu offers something for everyone.
-        <br>Don’t miss our signature Raccoon Mocha or the Berry Raccoon Smoothie!</br></h2>
-    
-    <p><br>Drinks :</br>
-    <br>Raccoon Mocha – $4.50</br>
-    <br>Berry Raccoon Smoothie – $5.00</br>
-    <br>Hot Chocolate ( w/ Raccoon marshmallow ) - $4.0</br>
-    </p>
+        <section>
+            <div class="headers">
+                <h1>‧₊˚♪ 𝄞₊ Menu ‧₊˚♪ 𝄞₊ -----------------------------------------------------</h1>
+                <h2>୨ৎ From handcrafted coffees and teas to fresh pastries and light bites, our menu offers something
+                    for
+                    everyone.
+                    Don’t miss our signature Raccoon Mocha or the Berry Raccoon Smoothie! ୨ৎ</br>
+                </h2>
+            </div>
+        </section>
 
-    <p><br>Treats :</br>
-    <br>Fresh Fruit Salad - $2.50</br>
-    <br>Freshly Baked Scones – $3.0</br>
-    <br>Raccoon cookies - $5.0</br>
-    </p>
+        <section>
+            <div class="txt">
+                <p><br>Drinks :</br>
+                    <br>Raccoon Mocha – $4.50</br>
+                    <br>Berry Raccoon Smoothie – $5.00</br>
+                    <br>Hot Chocolate ( w/ Raccoon marshmallow ) - $4.0</br>
+                </p>
 
-    <p>
-        <img src="../images/Rac_Eating.jpg">
-        <img src="../images/Rac_Eating4.jpg">
-    </p>
+                <p><br>Treats :</br>
+                    <br>One slice of pizza - $2.50</br>
+                    <br>Raccoon donuts – $3.0</br>
+                    <br>Raccoon cookies - $5.0</br>
+                </p>
+            </div>
+        </section>
+
+        <section>
+            <p>
+                <img class="rac1" src="../images/Rac_Eating.jpg" alt="Raccoon">
+                <img class="rac2" src="../images/Rac_Eating4.jpg" alt="Raccoon">
+            </p>
+        </section>
+
+        <section>
+            <div class="moretxt">
+                <p>
+                    ｡𖦹°‧ Powered by coffee & raccoon mischief ࣪ ִֶ｡𖦹°‧
+                    <br>© 2025 Raccoon Café — All crumbs claimed by our raccoons !!
+                </p>
+            </div>
+        </section>
+
     </main>
 </body>
+
 </html>
