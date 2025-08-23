@@ -59,6 +59,90 @@
             font-size: large;
             margin: 0;
         }
+
+        .headers {
+            margin-left: 20px;
+        }
+
+        .headers h1 {
+            font-weight: bold;
+            font-size: 30px;
+            margin-top: 30px;
+        }
+
+        .txt {
+            margin-left: 20px;
+            margin-bottom: 60px;
+        }
+
+        /* Container for all news items */
+        .news-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 30px;
+            /* Space between the articles */
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Styles for each news article card */
+        .news-item {
+            background-color: #fff;
+            border-radius: 20px;
+            /* Rounded corners for a softer look */
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            /* Ensures image corners are also rounded */
+            width: 350px;
+            /* Fixed width for consistency */
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .news-item:hover {
+            transform: translateY(-5px);
+            /* Lifts the card on hover */
+            box-shadow: 0 12px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Image styling */
+        .image-wrapper {
+            height: 250px;
+            overflow: hidden;
+        }
+
+        .news-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            /* Ensures images fill the space nicely */
+            display: block;
+        }
+
+        /* Text content styling */
+        .text-content {
+            padding: 20px;
+        }
+
+        .news-title {
+            font-size: 1.5rem;
+            color: #3e487e;
+            /* A cute pink color for titles */
+            margin: 0 0 10px 0;
+        }
+
+        .news-description {
+            font-size: 1rem;
+            color: #626da1;
+            /* A cute purple color for text */
+            margin: 0;
+        }
+
+        .othertxt {
+            margin-left: 42%;
+            font-size: 20px;
+            margin-top: 70px;
+        }
     </style>
 </head>
 
@@ -78,14 +162,81 @@
 
 
     <main>
-    <h1>Raccon Cafe !!</h1>
-    <h2>Welcome to Raccoon Cafe - Where Cozy Meets Cute!</h2>
-    <p>Discover the perfect spot to relax with a warm drink and adorable raccoon friends. Enjoy delicious coffee, tasty
-        treats, and a unique experience that will make your day special.
-    </p>
-    <p>
-        <img src="../images/Rac_Table.jpg">
-    </p>
+
+        <section>
+            <div class="headers">
+                <h1>-`✮´- Latest News & Updates -`✮´------------------------------------------</h1>
+            </div>
+        </section>
+
+        <section>
+            <div class="txt">
+                <p>`✮´ Stay in the loop with all things Raccoon Cafe!
+                    <br>From new menu launches and special events to behind-the-scenes
+                    stories about our raccoons, this is where you’ll find our freshest updates.`✮´
+                </p>
+            </div>
+        </section>
+
+        <section>
+            <div class="news-container">
+
+                <article class="news-item">
+                    <div class="image-wrapper">
+                        <img src="../images/raccake.jpeg" alt="Raccake">
+                    </div>
+                    <div class="text-content">
+                        <h2 class="news-title">Happy 1 year anniversary!!!</h2>
+                        <p class="news-description">
+                            One year ago, our little raccoon family opened its doors, and thanks to YOU, we’ve grown,
+                            laughed, and shared countless cozy moments together.
+                            <br>
+                            <br>Here’s to more fluffy hugs, warm cups, and happy memories for many years to come. Thank
+                            you
+                            for being part of our journey!
+                            <br>
+                            <br>— With love,
+                            Your Raccoon Café family
+                        </p>
+                    </div>
+                </article>
+
+                <article class="news-item">
+                    <div class="image-wrapper">
+                        <img src="../images/racmusic (1).jpeg" alt="Racmusic">
+                    </div>
+                    <div class="text-content">
+                        <h2 class="news-title">New raccoon friend!!</h2>
+                        <p class="news-description">
+                            Meet our new raccoon friend, Melody! She’s a playful and curious little raccoon who loves
+                            music and jumping around!
+                        </p>
+                    </div>
+                </article>
+
+                <article class="news-item">
+                    <div class="image-wrapper">
+                        <img src="../images/racsip.jpeg" alt="Racsip">
+                    </div>
+                    <div class="text-content">
+                        <h2 class="news-title">New menu item!!</h2>
+                        <p class="news-description">
+                            We’re excited to introduce our new Raccoon Sip! This delightful drink combines the rich,
+                            creamy flavors of chocolate and coffee, topped with a swirl of whipped cream and a sprinkle
+                            of cocoa powder. Perfect for raccoon lovers and coffee enthusiasts alike!
+                        </p>
+                    </div>
+                </article>
+
+            </div>
+        </section>
+
+        <section>
+            <div class="othertxt">
+                <p>You're all caught up!</p>
+            </div>
+        </section>
     </main>
 </body>
+
 </html>

@@ -59,6 +59,112 @@
             font-size: large;
             margin: 0;
         }
+
+        .headers {
+            margin-left: 20px;
+        }
+
+        .headers h1 {
+            font-weight: bold;
+            font-size: 30px;
+            margin-top: 30px;
+        }
+
+        .txt {
+            margin-left: 20px;
+            margin-bottom: 60px;
+        }
+
+        /* Slideshow container */
+        .slideshow-container {
+            max-width: 800px;
+            /* Or your preferred maximum width */
+            position: relative;
+            margin: auto;
+        }
+
+        /* Hide all slides by default */
+        .mySlides {
+            display: none;
+            width: 800px;
+            /* Fixed width for uniform sizing */
+            height: 400px;
+            /* Fixed height for uniform sizing */
+        }
+
+        /* Make images fit the container without distortion */
+        .mySlides img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border: 8px solid #8690C1;
+            border-radius: 50px;
+            /* This is key for uniform sizing */
+            display: block;
+        }
+
+        /* Next and previous buttons/arrows */
+        .prev,
+        .next {
+            cursor: pointer;
+            position: absolute;
+            top: 50%;
+            width: auto;
+            margin-top: -22px;
+            padding: 16px;
+            color: white;
+            font-weight: bold;
+            font-size: 18px;
+            transition: 0.6s ease;
+            border-radius: 0 3px 3px 0;
+            user-select: none;
+        }
+
+        /* Position the "next" button to the right */
+        .next {
+            right: 0;
+            border-radius: 3px 0 0 3px;
+        }
+
+        /* On hover, add a semi-transparent black background */
+        .prev:hover,
+        .next:hover {
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+
+        /* The dots/bullets/indicators */
+        .dot {
+            cursor: pointer;
+            height: 15px;
+            width: 15px;
+            margin: 0 2px;
+            background-color: #8690C1;
+            border-radius: 50%;
+            display: inline-block;
+            transition: background-color 0.6s ease;
+        }
+
+        /* Add a background color to the active dot */
+        .active,
+        .dot:hover {
+            background-color: #141B3D;
+        }
+
+        /* Fading animation for slides */
+        .fade {
+            animation-name: fade;
+            animation-duration: 1.5s;
+        }
+
+        @keyframes fade {
+            from {
+                opacity: .4
+            }
+
+            to {
+                opacity: 1
+            }
+        }
     </style>
 </head>
 
@@ -78,14 +184,111 @@
 
 
     <main>
-    <h1>Raccon Cafe !!</h1>
-    <h2>Welcome to Raccoon Cafe - Where Cozy Meets Cute!</h2>
-    <p>Discover the perfect spot to relax with a warm drink and adorable raccoon friends. Enjoy delicious coffee, tasty
-        treats, and a unique experience that will make your day special.
-    </p>
-    <p>
-        <img src="../images/Rac_Table.jpg">
-    </p>
+        <section>
+            <div class="headers">
+                <h1> .☘︎ ݁˖ Photo & Video Gallery ☘︎ ݁˖ ----------------------------------------------</h1>
+            </div>
+        </section>
+
+        <section>
+            <div class="txt">
+                <p>☘︎ Explore our collection of adorable moments captured with our raccoons and visitors.
+                    <br>Feel the warmth and
+                    joy of the Raccoon Cafe community. ☘︎
+                </p>
+            </div>
+        </section>
+
+        <section>
+            <div class="slideshow-container">
+
+                <div class="mySlides fade">
+                    <img src="../images/Raclaying (2).jpeg" style="width:100%">
+                </div>
+
+                <div class="mySlides fade">
+                    <img src="../images/Rac_Group.jpg" style="width:100%">
+                </div>
+
+                <div class="mySlides fade">
+                    <img src="../images/Raclaying.jpeg" style="width:100%">
+                </div>
+
+                <div class="mySlides fade">
+                    <img src="../images/Racgun.jpeg" style="width:100%">
+                </div>
+
+                <div class="mySlides fade">
+                    <img src="../images/Raccar.jpeg" style="width:100%">
+                </div>
+
+                <a class="prev">&#10094;</a>
+                <a class="next">&#10095;</a>
+            </div>
+            <br>
+
+            <div style="text-align:center">
+                <span class="dot" onclick="currentSlide(1)"></span>
+                <span class="dot" onclick="currentSlide(2)"></span>
+                <span class="dot" onclick="currentSlide(3)"></span>
+                <span class="dot" onclick="currentSlide(4)"></span>
+                <span class="dot" onclick="currentSlide(5)"></span>
+            </div>
+        </section>
     </main>
+
+    <script>
+        let slideIndex = 1;
+        showSlides(slideIndex);
+
+        // Next/previous controls
+        function plusSlides(n) {
+            showSlides(slideIndex += n);
+        }
+
+        // Thumbnail image controls
+        function currentSlide(n) {
+            showSlides(slideIndex = n);
+        }
+
+        function showSlides(n) {
+            let i;
+            let slides = document.getElementsByClassName("mySlides");
+            let dots = document.getElementsByClassName("dot");
+
+            // Handles loop from last slide to first
+            if (n > slides.length) {
+                slideIndex = 1;
+            }
+            // Handles loop from first slide to last
+            if (n < 1) {
+                slideIndex = slides.length;
+            }
+
+            // Hide all slides
+            for (i = 0; i < slides.length; i++) {
+                slides[i].style.display = "none";
+            }
+
+            // Remove the active class from all dots
+            for (i = 0; i < dots.length; i++) {
+                dots[i].className = dots[i].className.replace(" active", "");
+            }
+
+            // Show the current slide and add "active" class to the current dot
+            slides[slideIndex - 1].style.display = "block";
+            dots[slideIndex - 1].className += " active";
+        }
+
+        // Add event listeners to buttons
+        document.querySelector(".next").addEventListener("click", () => {
+            plusSlides(1);
+        });
+
+        document.querySelector(".prev").addEventListener("click", () => {
+            plusSlides(-1);
+        });
+    </script>
 </body>
+
 </html>

@@ -72,78 +72,69 @@
 
         .txt {
             margin-left: 20px;
+            margin-bottom: 100px;
         }
 
-        .racpins {
-            margin-left: 90px;
-            margin-top: 50px;
+        .moretxt {
+            margin-left: 40%;
+            font-size: 30px;
+            margin-top: 100px;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            /* Creates two equal-width columns */
+            gap: 150px 450px;
+            max-width: 900px;
+            margin-left: 225px;
+
+        }
+
+        .image-container {
+            position: relative;
             width: 320px;
-            border-color: #8690C1;
-            border-width: 8px;
-            border-style: solid;
             height: 320px;
+            overflow: hidden;
+            border: 8px solid #8690C1;
             border-radius: 50px;
-            transition: width 2s, height 2s;
             cursor: pointer;
         }
 
-        .racpins:hover {
-            width: 340px;
-            height: 340px;
+        .image-container img {
+            width: 100%;
+            height: 100%;
+            display: block;
         }
 
-        .racscarf {
-            margin-left: 170px;
-            margin-top: 50px;
-            width: 320px;
-            border-color: #8690C1;
-            border-width: 8px;
-            border-style: solid;
-            height: 320px;
-            border-radius: 50px;
-            transition: width 2s, height 2s;
-            cursor: pointer;
+        .description-box {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #8690C1;
+            opacity: 0.9;
+            color: #141B3D;
+            padding: 20px;
+            box-sizing: border-box;
+            transform: translateX(100%);
+            transition: transform 0.5s ease-in-out;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
         }
 
-        .racscarf:hover {
-            width: 340px;
-            height: 340px;
+        .image-container:hover .description-box {
+            transform: translateX(0);
         }
 
-        .racsticker {
-            margin-left: 170px;
-            margin-top: 50px;
-            width: 320px;
-            border-color: #8690C1;
-            border-width: 8px;
-            border-style: solid;
-            height: 320px;
-            border-radius: 50px;
-            transition: width 2s, height 2s;
-            cursor: pointer;
-        }
-
-        .racsticker:hover {
-            width: 340px;
-            height: 340px;
-        }
-
-        .racsweater {
-            margin-left: 170px;
-            margin-top: 50px;
-            width: 320px;
-            border-color: #8690C1;
-            border-width: 8px;
-            border-style: solid;
-            height: 320px;
-            border-radius: 50px;
-            transition: width 2s, height 2s;
-            cursor: pointer;
-        }
-
-        .racsweater:hover {
-            width: 340px;
-            height: 340px;
+        .description-box h3,
+        .description-box p {
+            margin: 0;
+            padding: 5px;
         }
     </style>
 </head>
@@ -173,7 +164,8 @@
 
         <section>
             <div class="txt">
-                <p>☁︎ Love our cafe and want to keep a piece of the magic? Browse our exclusive merchandise, perfect for
+                <p>☁︎ Love our cafe and want to keep a piece of the magic?
+                    <br>Browse our exclusive merchandise, perfect for
                     raccoon
                     lovers and coffee fans alike! ☁︎
                 </p>
@@ -181,14 +173,51 @@
         </section>
 
 
-        <p>
+        <section>
+            <p>
+            <div class="gallery-grid">
+                <div class="image-container">
+                    <img src="../images/Racpins.jpeg" alt="Racpins">
+                    <div class="description-box">
+                        <h3>Raccoon pins!</h3>
+                        <p>Have a raccoon pin with a low price of 3USD !!!</p>
+                    </div>
+                </div>
 
-            <img class="racpins" src="../images/Racpins.jpeg" alt="Raccoon">
-            <img class="racscarf" src="../images/RacScarf.jpeg" alt="Raccoon">
-            <img class="racsticker" src="../images/Racsticker.jpeg" alt="Raccoon">
-            <img class="racsweater" src="../images/Racsweater.jpeg" alt="Raccoon">
+                <div class="image-container">
+                    <img src="../images/RacScarf.jpeg" alt="Racscarf">
+                    <div class="description-box">
+                        <h3>Raccoon scarf!</h3>
+                        <p>Keep yourself warm with an adorable raccoon scarf with a price of 10USD !!!</p>
+                    </div>
+                </div>
 
-        </p>
+                <div class="image-container">
+                    <img src="../images/Racsticker.jpeg" alt="Racsticker">
+                    <div class="description-box">
+                        <h3>Raccoon stickers</h3>
+                        <p>Have some cute raccoon stickers to put anywhere you'd like for the price of only 1USD each
+                            !!!</p>
+                    </div>
+                </div>
+
+                <div class="image-container">
+                    <img src="../images/Racsweater.jpeg" alt="Racsweater">
+                    <div class="description-box">
+                        <h3>Raccoon sweater</h3>
+                        <p>Be cute cozy and warm with a raccoon sweater with a price of 15USD !!!</p>
+                    </div>
+                </div>
+            </div>
+            </p>
+        </section>
+
+        <section>
+            <div class="moretxt">
+                <p>More coming soon!
+                </p>
+            </div>
+        </section>
     </main>
 </body>
 
