@@ -19,16 +19,13 @@
         .navbar {
             background-color: #8690C1;
             display: flex;
-            /*for horizontal layout*/
             justify-content: space-between;
-            /*makes the logo stick to the left N the menu to the right*/
             align-items: center;
             padding: 10px 20px;
         }
 
         .navbar ul {
             list-style: none;
-            /* erases the bullet points*/
             display: flex;
             margin: 0;
             padding: 15px;
@@ -36,7 +33,6 @@
 
         .navbar ul li {
             margin: 0 15px;
-            /* distance between items*/
         }
 
         .navbar ul li a {
@@ -76,20 +72,21 @@
         }
 
         .menubtn {
-            margin-left: 40%;
-            margin-top: 30px;
+            display: block;
+            margin: 30px auto 0;
             background-color: #8690C1;
             color: #141B3D;
             font-family: 'Courier New', Courier, monospace;
             font-weight: bold;
-            font-size: 50px;
+            font-size: 2em;
+            padding: 0.5em 1em;
             border-color: #141B3D;
             border-style: solid;
             cursor: pointer;
             border-radius: 30px;
             border-width: 4px;
             transition: opacity 0.5s;
-            padding: 100 200;
+            max-width: 400px;
         }
 
         .menubtn:hover {
@@ -103,12 +100,36 @@
         p img {
             margin-left: 10%;
             margin-top: 50px;
-            height: 300px;
-            width: 1200px;
+            height: auto;
+            width: 80%;
+            max-width: 1200px;
             border-style: solid;
             border-color: #8690C1;
             border-width: 10px;
             border-radius: 50px;
+        }
+
+        /* --- Responsive CSS for tablets and phones --- */
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                padding-bottom: 0;
+            }
+
+            .navbar ul {
+                flex-direction: column;
+                align-items: center;
+                padding: 0;
+                margin-top: 10px;
+            }
+
+            .navbar ul li {
+                margin: 10px 0;
+            }
+
+            .headers h1 {
+                font-size: 20px;
+            }
         }
     </style>
 

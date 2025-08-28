@@ -19,16 +19,13 @@
         .navbar {
             background-color: #8690C1;
             display: flex;
-            /*for horizontal layout*/
             justify-content: space-between;
-            /*makes the logo stick to the left N the menu to the right*/
             align-items: center;
             padding: 10px 20px;
         }
 
         .navbar ul {
             list-style: none;
-            /* erases the bullet points*/
             display: flex;
             margin: 0;
             padding: 15px;
@@ -36,7 +33,6 @@
 
         .navbar ul li {
             margin: 0 15px;
-            /* distance between items*/
         }
 
         .navbar ul li a {
@@ -81,7 +77,6 @@
             flex-wrap: wrap;
             justify-content: center;
             gap: 30px;
-            /* Space between the articles */
             max-width: 1200px;
             margin: 0 auto;
         }
@@ -90,18 +85,14 @@
         .news-item {
             background-color: #fff;
             border-radius: 20px;
-            /* Rounded corners for a softer look */
             box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
             overflow: hidden;
-            /* Ensures image corners are also rounded */
             width: 350px;
-            /* Fixed width for consistency */
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
         .news-item:hover {
             transform: translateY(-5px);
-            /* Lifts the card on hover */
             box-shadow: 0 12px 20px rgba(0, 0, 0, 0.2);
         }
 
@@ -115,7 +106,6 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            /* Ensures images fill the space nicely */
             display: block;
         }
 
@@ -127,21 +117,62 @@
         .news-title {
             font-size: 1.5rem;
             color: #3e487e;
-            /* A cute pink color for titles */
             margin: 0 0 10px 0;
         }
 
         .news-description {
             font-size: 1rem;
             color: #626da1;
-            /* A cute purple color for text */
             margin: 0;
         }
 
         .othertxt {
-            margin-left: 42%;
+            text-align: center;
+            /* Centering the "You're all caught up!" text */
             font-size: 20px;
             margin-top: 70px;
+        }
+
+        /* --- Responsive CSS for tablets and phones --- */
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                padding-bottom: 0;
+            }
+
+            .navbar ul {
+                flex-direction: column;
+                align-items: center;
+                padding: 0;
+                margin-top: 10px;
+            }
+
+            .navbar ul li {
+                margin: 10px 0;
+            }
+
+            .headers,
+            .txt {
+                margin-left: 5%;
+                margin-right: 5%;
+            }
+
+            .headers h1 {
+                font-size: 20px;
+            }
+
+            .news-container {
+                flex-direction: column;
+                /* Stacks the cards vertically */
+                align-items: center;
+            }
+
+            .news-item {
+                width: 90%;
+                /* Makes cards wider on small screens to fill space better */
+                margin-bottom: 20px;
+                /* Adds space between stacked cards */
+            }
         }
     </style>
 </head>

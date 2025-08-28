@@ -19,16 +19,13 @@
         .navbar {
             background-color: #8690C1;
             display: flex;
-            /*for horizontal layout*/
             justify-content: space-between;
-            /*makes the logo stick to the left N the menu to the right*/
             align-items: center;
             padding: 10px 20px;
         }
 
         .navbar ul {
             list-style: none;
-            /* erases the bullet points*/
             display: flex;
             margin: 0;
             padding: 15px;
@@ -36,7 +33,6 @@
 
         .navbar ul li {
             margin: 0 15px;
-            /* distance between items*/
         }
 
         .navbar ul li a {
@@ -72,23 +68,29 @@
 
         .txt {
             margin-left: 20px;
-            margin-bottom: 100px;
+            margin-bottom: 50px;
+            /* Reduced margin to be more flexible */
         }
 
         .moretxt {
-            margin-left: 40%;
+            text-align: center;
+            /* Center the "More coming soon" text */
             font-size: 30px;
-            margin-top: 100px;
+            margin-top: 50px;
+            /* Reduced margin for flexibility */
         }
 
+        /* Updated grid for responsiveness */
         .gallery-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            /* Creates two equal-width columns */
-            gap: 150px 450px;
-            max-width: 900px;
-            margin-left: 225px;
-
+            gap: 50px;
+            /* Use a reasonable gap between items */
+            justify-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            /* Center the entire grid */
+            padding: 20px;
         }
 
         .image-container {
@@ -136,6 +138,54 @@
             margin: 0;
             padding: 5px;
         }
+
+        /* --- Responsive CSS for tablets and phones --- */
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                padding-bottom: 0;
+            }
+
+            .navbar ul {
+                flex-direction: column;
+                align-items: center;
+                padding: 0;
+                margin-top: 10px;
+            }
+
+            .navbar ul li {
+                margin: 10px 0;
+            }
+
+            .headers,
+            .txt {
+                margin-left: 5%;
+                margin-right: 5%;
+            }
+
+            .headers h1 {
+                font-size: 20px;
+            }
+
+            /* Stacks grid items on top of each other */
+            .gallery-grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+
+            .image-container {
+                width: 80%;
+                height: auto;
+                padding-bottom: 80%;
+                /* Maintain a square aspect ratio */
+            }
+
+            .image-container img {
+                position: absolute;
+                top: 0;
+                left: 0;
+            }
+        }
     </style>
 </head>
 
@@ -175,7 +225,6 @@
 
 
         <section>
-            <p>
             <div class="gallery-grid">
                 <div class="image-container">
                     <img src="../images/Racpins.jpeg" alt="Racpins">
@@ -210,7 +259,6 @@
                     </div>
                 </div>
             </div>
-            </p>
         </section>
 
         <section>

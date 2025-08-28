@@ -19,16 +19,13 @@
         .navbar {
             background-color: #8690C1;
             display: flex;
-            /*for horizontal layout*/
             justify-content: space-between;
-            /*makes the logo stick to the left N the menu to the right*/
             align-items: center;
             padding: 10px 20px;
         }
 
         .navbar ul {
             list-style: none;
-            /* erases the bullet points*/
             display: flex;
             margin: 0;
             padding: 15px;
@@ -36,7 +33,6 @@
 
         .navbar ul li {
             margin: 0 15px;
-            /* distance between items*/
         }
 
         .navbar ul li a {
@@ -71,46 +67,100 @@
             margin-top: 30px;
         }
 
+        /* This is the new flex container for the main layout */
+        .main-content-layout {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            flex-wrap: wrap;
+            /* Allows items to wrap to a new line on smaller screens */
+            margin: 40px 20px;
+            gap: 20px;
+        }
+
         .txt {
-            margin-left: 20px;
-            margin-top: 30px;
+            flex: 1;
+            /* Allows this container to grow */
+            min-width: 300px;
+            line-height: 1.5;
         }
 
-        .rac1 {
-            margin-left: 90px;
-            margin-top: 50px;
-            width: 300px;
-            border-color: #8690C1;
-            border-width: 8px;
-            border-style: solid;
-            height: 300px;
-            border-radius: 50px;
-            transition: width 2s, height 2s;
-            cursor: pointer;
-            position: absolute;
-            top: 220px;
-            left: 64%;
+        .image-container {
+            flex: 1;
+            /* Allows this container to grow */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 30px;
+            flex-wrap: wrap;
+            min-width: 300px;
         }
 
+        .rac1,
         .rac2 {
-            margin-left: 90px;
-            margin-top: 50px;
-            width: 300px;
+            width: 40%;
+            max-width: 300px;
+            height: auto;
+            object-fit: cover;
             border-color: #8690C1;
             border-width: 8px;
             border-style: solid;
-            height: 300px;
             border-radius: 50px;
-            transition: width 2s, height 2s;
+            transition: transform 0.3s;
             cursor: pointer;
-            position: absolute;
-            top: 220px;
-            left: 36%;
+        }
+
+        .rac1:hover,
+        .rac2:hover {
+            transform: scale(1.05);
         }
 
         .moretxt {
+            margin-top: 50px;
             margin-left: 20px;
-            margin-top: 120px;
+            padding-bottom: 20px;
+        }
+
+        /* --- Responsive CSS for tablets and phones --- */
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                padding-bottom: 0;
+            }
+
+            .navbar ul {
+                flex-direction: column;
+                align-items: center;
+                padding: 0;
+                margin-top: 10px;
+            }
+
+            .navbar ul li {
+                margin: 10px 0;
+            }
+
+            .headers {
+                margin-left: 5%;
+            }
+
+            .headers h1 {
+                font-size: 20px;
+            }
+
+            .txt {
+                margin: 20px 5%;
+            }
+
+            .image-container {
+                flex-direction: column;
+                gap: 20px;
+                margin-top: 20px;
+            }
+
+            .rac1,
+            .rac2 {
+                width: 80%;
+            }
         }
     </style>
 </head>
@@ -135,14 +185,12 @@
             <div class="headers">
                 <h1>‧₊˚♪ 𝄞₊ Menu ‧₊˚♪ 𝄞₊ -----------------------------------------------------</h1>
                 <h2>୨ৎ From handcrafted coffees and teas to fresh pastries and light bites, our menu offers something
-                    for
-                    everyone.
-                    Don’t miss our signature Raccoon Mocha or the Berry Raccoon Smoothie! ୨ৎ</br>
+                    for everyone. Don’t miss our signature Raccoon Mocha or the Berry Raccoon Smoothie! ୨ৎ</br>
                 </h2>
             </div>
         </section>
 
-        <section>
+        <section class="main-content-layout">
             <div class="txt">
                 <p><br>Drinks :</br>
                     <br>Raccoon Mocha – $4.50</br>
@@ -156,13 +204,11 @@
                     <br>Raccoon cookies - $5.0</br>
                 </p>
             </div>
-        </section>
 
-        <section>
-            <p>
+            <div class="image-container">
                 <img class="rac1" src="../images/Rac_Eating.jpg" alt="Raccoon">
                 <img class="rac2" src="../images/Rac_Eating4.jpg" alt="Raccoon">
-            </p>
+            </div>
         </section>
 
         <section>

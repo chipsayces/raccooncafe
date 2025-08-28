@@ -19,16 +19,13 @@
         .navbar {
             background-color: #8690C1;
             display: flex;
-            /*for horizontal layout*/
             justify-content: space-between;
-            /*makes the logo stick to the left N the menu to the right*/
             align-items: center;
             padding: 10px 20px;
         }
 
         .navbar ul {
             list-style: none;
-            /* erases the bullet points*/
             display: flex;
             margin: 0;
             padding: 15px;
@@ -36,7 +33,6 @@
 
         .navbar ul li {
             margin: 0 15px;
-            /* distance between items*/
         }
 
         .navbar ul li a {
@@ -78,18 +74,18 @@
         /* Slideshow container */
         .slideshow-container {
             max-width: 800px;
-            /* Or your preferred maximum width */
             position: relative;
             margin: auto;
+            width: 90%;
+            margin-top: 50px;
+            /* This is the new change to add space above the slideshow */
         }
 
         /* Hide all slides by default */
         .mySlides {
             display: none;
-            width: 800px;
-            /* Fixed width for uniform sizing */
+            width: 100%;
             height: 400px;
-            /* Fixed height for uniform sizing */
         }
 
         /* Make images fit the container without distortion */
@@ -99,7 +95,6 @@
             object-fit: cover;
             border: 8px solid #8690C1;
             border-radius: 50px;
-            /* This is key for uniform sizing */
             display: block;
         }
 
@@ -110,7 +105,6 @@
             position: absolute;
             top: 50%;
             width: auto;
-            margin-top: -22px;
             padding: 16px;
             color: white;
             font-weight: bold;
@@ -118,6 +112,7 @@
             transition: 0.6s ease;
             border-radius: 0 3px 3px 0;
             user-select: none;
+            background-color: rgba(0, 0, 0, 0.5);
         }
 
         /* Position the "next" button to the right */
@@ -163,6 +158,51 @@
 
             to {
                 opacity: 1
+            }
+        }
+
+        /* --- Responsive CSS for tablets and phones --- */
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                padding-bottom: 0;
+            }
+
+            .navbar ul {
+                flex-direction: column;
+                align-items: center;
+                padding: 0;
+                margin-top: 10px;
+            }
+
+            .navbar ul li {
+                margin: 10px 0;
+            }
+
+            .headers,
+            .txt {
+                margin-left: 5%;
+                margin-right: 5%;
+            }
+
+            .headers h1 {
+                font-size: 20px;
+            }
+
+            .slideshow-container {
+                width: 100%;
+                margin-top: 30px;
+                /* Reduced margin for smaller screens */
+            }
+
+            .mySlides {
+                height: 300px;
+            }
+
+            .prev,
+            .next {
+                font-size: 14px;
+                padding: 10px;
             }
         }
     </style>

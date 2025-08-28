@@ -19,16 +19,13 @@
         .navbar {
             background-color: #8690C1;
             display: flex;
-            /*for horizontal layout*/
             justify-content: space-between;
-            /*makes the logo stick to the left N the menu to the right*/
             align-items: center;
             padding: 10px 20px;
         }
 
         .navbar ul {
             list-style: none;
-            /* erases the bullet points*/
             display: flex;
             margin: 0;
             padding: 15px;
@@ -36,7 +33,6 @@
 
         .navbar ul li {
             margin: 0 15px;
-            /* distance between items*/
         }
 
         .navbar ul li a {
@@ -74,79 +70,53 @@
             margin-left: 20px;
         }
 
-        .rac1 {
-            margin-left: 90px;
-            margin-top: 50px;
-            width: 320px;
-            border-color:#8690C1;
-            border-width: 8px;
-            border-style: solid;
-            height: 320px;
-            border-radius: 50px;
-            transition: width 2s, height 2s;
-            cursor: pointer;
+        .image-row {
+            text-align: center;
         }
 
-        .rac1:hover {
-            width: 340px;
-            height: 340px;
-        }
-
-        .rac2 {
-            margin-left: 170px;
-            margin-top: 50px;
-            width: 320px;
-            border-color:#8690C1;
-            border-width: 8px;
-            border-style: solid;
-            height: 320px;
-            border-radius: 50px;
-            transition: width 2s, height 2s;
-            cursor: pointer;
-        }
-
-        .rac2:hover {
-            width: 340px;
-            height: 340px;
-        }
-
+        .rac1,
+        .rac2,
         .rac3 {
-            margin-left: 170px;
-            margin-top: 50px;
+            margin: 50px 25px;
+            /* Increased the horizontal margin from 10px to 25px */
             width: 320px;
-            border-color:#8690C1;
+            height: 320px;
+            object-fit: cover;
+            border-color: #8690C1;
             border-width: 8px;
             border-style: solid;
-            height: 320px;
             border-radius: 50px;
-            transition: width 2s, height 2s;
+            transition: all 0.5s;
             cursor: pointer;
         }
 
+        .rac1:hover,
+        .rac2:hover,
         .rac3:hover {
-            width: 340px;
-            height: 340px;
+            transform: scale(1.05);
         }
 
         .moretxt {
-            margin-left: 20%;
+            text-align: center;
             font-size: 25px;
+            margin: 20px;
         }
 
         .mtrbtn {
-            margin-left: 39%;
+            display: block;
+            margin: 20px auto;
             background-color: #8690C1;
             color: #141B3D;
             font-family: 'Courier New', Courier, monospace;
             font-weight: bold;
-            font-size: 30px;
+            font-size: 1.5em;
+            padding: 0.5em 1em;
             border-color: #141B3D;
             border-style: solid;
             cursor: pointer;
             border-radius: 30px;
             border-width: 4px;
             transition: opacity 0.5s;
-            padding: 80 160;
         }
 
         .mtrbtn:hover {
@@ -156,8 +126,52 @@
         .mtrbtn:active {
             opacity: 0.5;
         }
-        
 
+        /* --- Responsive CSS for tablets and phones --- */
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                padding-bottom: 0;
+            }
+
+            .navbar ul {
+                flex-direction: column;
+                align-items: center;
+                padding: 0;
+                margin-top: 10px;
+            }
+
+            .navbar ul li {
+                margin: 10px 0;
+            }
+
+            .headers h1,
+            .headers h2,
+            .txt,
+            .moretxt {
+                margin-left: 5%;
+                margin-right: 5%;
+            }
+
+            .headers h1 {
+                font-size: 20px;
+            }
+
+            .rac1,
+            .rac2,
+            .rac3 {
+                display: block;
+                width: 80%;
+                height: auto;
+                max-width: 320px;
+                margin: 30px auto;
+                object-fit: cover;
+            }
+
+            .moretxt {
+                font-size: 1.2em;
+            }
+        }
     </style>
 </head>
 
@@ -190,23 +204,27 @@
         <section>
             <div class="txt">
                 <p>☆ Raccoon Cafe was born from a love of animals and great coffee.
-            <br>We’re dedicated to providing a safe and cozy space where people can enjoy quality
-            beverages while spending time with our playful raccoons.</br> Our mission is to create a community where
-            both guests and raccoons feel happy and cared for. ☆</p>
+                    <br>We’re dedicated to providing a safe and cozy space where people can enjoy quality
+                    beverages while spending time with our playful raccoons.</br> Our mission is to create a community
+                    where
+                    both guests and raccoons feel happy and cared for. ☆
+                </p>
             </div>
         </section>
 
         <section>
-            <p>
-            <img class = "rac1" src="../images/Rac_Shocked.jpg" alt="Raccoon">
-            <img class = "rac2" src="../images/Rac_Sleeping.jpg" alt="Raccoon">
-            <img class = "rac3" src="../images/Rac_Table.jpg" alt="Raccoon">
-            </p>
-            <div class="moretxt">
-            <p>Wanna meet more of our cute raccoons?? Click the button below !!!</p>
+            <div class="image-row">
+                <img class="rac1" src="../images/Rac_Shocked.jpg" alt="Raccoon">
+                <img class="rac2" src="../images/Rac_Sleeping.jpg" alt="Raccoon">
+                <img class="rac3" src="../images/Rac_Table.jpg" alt="Raccoon">
             </div>
-            <button class="mtrbtn" onclick="location.href='meet.html'">
-                ⟡ Meet the racs ⟡</button>
+        </section>
+
+        <div class="moretxt">
+            <p>Wanna meet more of our cute raccoons?? Click the button below !!!</p>
+        </div>
+        <button class="mtrbtn" onclick="location.href='meet.html'">
+            ⟡ Meet the racs ⟡</button>
         </section>
 
     </main>
