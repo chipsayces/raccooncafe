@@ -1,0 +1,564 @@
+<!doctype html>
+<html lang="th">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Stickman Platformer: Goblin Portals</title>
+  <style>
+    :root {
+      --sky1: #8ec5ff;
+      --sky2: #fce7f3;
+      --ground1: #34d399;
+      --ground2: #a7f3d0;
+      --platform: #fbbf24;
+      --text: #0b1324;
+      --ui: rgba(255, 255, 255, .92)
+    }
+
+    * {
+      box-sizing: border-box
+    }
+
+    html,
+    body {
+      height: 100%;
+      margin: 0
+    }
+
+    body {
+      background: linear-gradient(160deg, var(--sky1), var(--sky2));
+      font-family: system-ui, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      overflow: hidden
+    }
+
+    #wrap {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      display: grid;
+      place-items: center
+    }
+
+    canvas {
+      display: block;
+      background: linear-gradient(0deg, var(--ground1), var(--ground2));
+      border: 4px solid #111;
+      border-radius: 16px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, .25)
+    }
+
+    .hud {
+      position: absolute;
+      inset: auto 0 18px 0;
+      display: flex;
+      justify-content: center;
+      gap: 18px;
+      pointer-events: none;
+      flex-wrap: wrap
+    }
+
+    .pill {
+      background: var(--ui);
+      padding: 6px 10px;
+      border-radius: 999px;
+      color: var(--text);
+      font-weight: 700;
+      letter-spacing: .2px;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, .1)
+    }
+
+    .overlay {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      background: radial-gradient(600px 400px at 50% 40%, rgba(255, 255, 255, .35), rgba(0, 0, 0, .35));
+      z-index: 5
+    }
+
+    .card {
+      background: rgba(255, 255, 255, .96);
+      color: #0b1324;
+      border-radius: 16px;
+      border: 1px solid rgba(0, 0, 0, .08);
+      padding: 20px;
+      min-width: min(92vw, 620px);
+      max-width: 760px;
+      text-align: center;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, .25)
+    }
+
+    .title {
+      font-size: 24px;
+      font-weight: 900
+    }
+
+    .subtitle {
+      opacity: .75;
+      margin: 6px 0 10px
+    }
+
+    .row {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap
+    }
+
+    .btn {
+      appearance: none;
+      border: 0;
+      border-radius: 12px;
+      padding: 10px 14px;
+      font-weight: 800;
+      color: white;
+      background: linear-gradient(180deg, #16a34a, #15803d);
+      cursor: pointer
+    }
+
+    .btn:active {
+      transform: translateY(1px)
+    }
+
+    .btn.secondary {
+      background: linear-gradient(180deg, #64748b, #475569)
+    }
+
+    .btn.warning {
+      background: linear-gradient(180deg, #ef4444, #b91c1c)
+    }
+
+    .input {
+      padding: 8px 10px;
+      border-radius: 10px;
+      border: 1px solid #cbd5e1;
+      min-width: 220px
+    }
+
+    .shop-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(160px, 1fr));
+      gap: 12px;
+      margin-top: 8px
+    }
+
+    .shop-item {
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 10px;
+      background: #fff
+    }
+
+    .shop-h {
+      font-weight: 800;
+      margin-bottom: 6px
+    }
+
+    .price {
+      font-weight: 800
+    }
+
+    .backbtn {
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      background-color: #8690C1;
+      color: #141B3D;
+      font-family: 'Courier New', Courier, monospace;
+      font-weight: bold;
+      font-size: 20px;
+      border-color: #141B3D;
+      border-style: solid;
+      cursor: pointer;
+      border-radius: 30px;
+      border-width: 4px;
+      transition: opacity 0.5s;
+      padding: 20px 50px;
+    }
+
+    .backbtn:hover {
+      opacity: 0.75;
+    }
+
+    .backbtn:active {
+      opacity: 0.5;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="wrap">
+    <canvas id="game"></canvas>
+    <div class="hud">
+      <div class="pill">ผู้เล่น: <span id="hudName">-</span></div>
+      <div class="pill">เลเวล: <span id="hudLevel">1</span></div>
+      <div class="pill">คะแนน: <span id="hudScore">0</span></div>
+      <div class="pill">เหรียญ: <span id="hudGold">0</span></div>
+      <div class="pill">ชีวิต: <span id="hudLives">3</span></div>
+      <div class="pill">กำจัด: <span id="hudKills">0</span></div>
+    </div>
+
+    <!-- Overlay (start / pause / summary / game over / shop) -->
+    <div id="overlay" class="overlay">
+      <div class="card" id="overlayCard">
+        <div class="title">Stickman Platformer: Goblin Portals</div>
+        <div class="subtitle">ใส่ชื่อแล้วลุย! ปุ่ม: ← → หรือ A/D เดิน, Space/↑/W กระโดด, P หยุด</div>
+        <div class="row" style="margin:10px 0 4px">
+          <input id="playerNameInput" class="input" placeholder="ชื่อผู้เล่น" />
+        </div>
+        <div class="row">
+          <button class="btn" id="startBtn">เริ่มเกม</button>
+          <button class="btn secondary" id="howBtn">วิธีเล่น</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <button class="backbtn" onclick="location.href='../pages/games.html'">
+    ⟡ Back ⟡</button>
+
+  <script>
+    (() => {
+      // ====== Virtual world with camera (responsive) ======
+      const VIRT_W = 960, VIRT_H = 540; // camera viewport size
+      const canvas = document.getElementById('game');
+      const ctx = canvas.getContext('2d');
+      let scale = 1, offsetX = 0, offsetY = 0;
+      function fitCanvas() {
+        const w = window.innerWidth, h = window.innerHeight;
+        scale = Math.min(w / VIRT_W, h / VIRT_H);
+        const cw = Math.floor(VIRT_W * scale), ch = Math.floor(VIRT_H * scale);
+        canvas.width = cw; canvas.height = ch;
+        offsetX = (w - cw) / 2; offsetY = (h - ch) / 2;
+        canvas.style.width = cw + 'px';
+        canvas.style.height = ch + 'px';
+        canvas.style.marginLeft = offsetX + 'px';
+        canvas.style.marginTop = offsetY + 'px';
+      }
+      window.addEventListener('resize', fitCanvas); fitCanvas();
+
+      // ====== UI refs ======
+      const overlay = document.getElementById('overlay');
+      const overlayCard = document.getElementById('overlayCard');
+      const startBtn = document.getElementById('startBtn');
+      const howBtn = document.getElementById('howBtn');
+      const nameInput = document.getElementById('playerNameInput');
+      const hudName = document.getElementById('hudName');
+      const hudLevel = document.getElementById('hudLevel');
+      const hudScore = document.getElementById('hudScore');
+      const hudGold = document.getElementById('hudGold');
+      const hudLives = document.getElementById('hudLives');
+      const hudKills = document.getElementById('hudKills');
+
+      // ====== Physics & constants ======
+      const G = 0.8, MOVE = 0.7, FRICTION = 0.85, MAX_VX = 6.2, JUMP_V = 13.5;
+      const KEYS = { left: false, right: false, up: false };
+      const rng = (a, b) => Math.random() * (b - a) + a;
+
+      // ====== Cosmetics / Shop ======
+      const inventory = { hat: false, band: false, cape: false, color: '#111' };
+      const shop = [
+        { key: 'hat', name: 'หมวกกลม', price: 80, desc: 'ติดหัวเท่ๆ', type: 'toggle' },
+        { key: 'band', name: 'ผ้าคาดหัว', price: 60, desc: 'ลุคสปอร์ต', type: 'toggle' },
+        { key: 'cape', name: 'ผ้าคลุม', price: 120, desc: 'โบกสะบัด', type: 'toggle' },
+        { key: 'color', name: 'สีตัวละคร', price: 50, desc: 'เปลี่ยนสีเส้น', type: 'color', value: '#111' },
+      ];
+
+      // ====== Entities ======
+      class Rect { constructor(x, y, w, h) { this.x = x; this.y = y; this.w = w; this.h = h; } }
+      class Player extends Rect { constructor() { super(60, VIRT_H - 140, 20, 46); this.vx = 0; this.vy = 0; this.onGround = false; this.inv = 0; } }
+      class Goblin extends Rect {
+        constructor(x, y, weapon = 'sword') { super(x, y, 28, 36); this.weapon = weapon; this.dir = 1; this.speed = 1.5; this.vx = 0; this.vy = 0; this.patrol = { min: x - 90, max: x + 90 }; this.cool = 60; this.swapTimer = 240 + Math.floor(rng(-60, 60)); this.dead = false; }
+        update() {
+          if (this.dead) return; // patrol + gravity
+          this.vx = this.dir * this.speed; this.vy += G;
+          this.y += this.vy; resolveCollide(this, true);
+          this.x += this.vx; resolveCollide(this, false);
+          if (this.x < this.patrol.min) { this.x = this.patrol.min; this.dir = 1; }
+          if (this.x + this.w > this.patrol.max) { this.x = this.patrol.max - this.w; this.dir = -1; }
+          // swap weapon periodically
+          if (this.swapTimer > 0) this.swapTimer--; else { this.weapon = (this.weapon === 'sword') ? 'bow' : 'sword'; this.swapTimer = 220 - Math.min(120, level * 8); }
+          if (this.weapon === 'bow') {
+            if (this.cool > 0) this.cool--; else {
+              if (Math.abs((player.y + player.h / 2) - (this.y + this.h / 2)) < 50) {
+                const toward = (player.x < this.x) ? -1 : 1; this.dir = toward;
+                spawnArrow(this.x + (toward < 0 ? 0 : this.w), this.y + 12, toward * (5.5 + Math.min(2, level * 0.2)), 0);
+                this.cool = 90 - Math.min(50, level * 4);
+              }
+            }
+          }
+        }
+      }
+      class Coin extends Rect { constructor(x, y) { super(x, y, 16, 16); this.t = rng(0, Math.PI * 2); this.gone = false; } }
+      class Spike extends Rect { constructor(x, y, w = 24, h = 16) { super(x, y, w, h); } }
+      class Arrow extends Rect { constructor(x, y, vx, vy) { super(x, y, 12, 4); this.vx = vx; this.vy = vy; this.dead = false; } }
+      class Water extends Rect { constructor(x, y, w, h) { super(x, y, w, h); } }
+
+      // ====== World & camera ======
+      const world = { width: 2800, height: VIRT_H, platforms: [], goblins: [], coins: [], spikes: [], waters: [], portal: new Rect(2600, VIRT_H - 220, 40, 180) };
+      let level = 1, score = 0, gold = 0, lives = 3, kills = 0, running = false, paused = false, playerName = '';
+      const player = new Player();
+      const arrows = [];
+      let camX = 0; // camera follows player
+
+      // ====== Helpers ======
+      function aabb(a, b) { return a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.y + a.h > b.y; }
+      const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+      function updateHUD() { hudName.textContent = playerName || 'Player'; hudLevel.textContent = level; hudScore.textContent = score; hudGold.textContent = gold; hudLives.textContent = lives; hudKills.textContent = kills; }
+
+      // Build reachable platforms + difficulty scaling + river gap
+      function buildReachablePlatforms(difficulty) {
+        const list = [new Rect(0, VIRT_H - 36, world.width, 36)];
+        const gapX = 240 - Math.min(140, difficulty * 10);
+        const stepY = 70; // jumpable
+        let x = 160, y = VIRT_H - 140;
+        while (x < world.width - 360) {
+          const w = 140 + Math.floor(rng(-30, 30));
+          list.push(new Rect(x, y, w, 16));
+          x += gapX + rng(-20, 20);
+          y -= stepY + rng(-10, 10);
+          y = Math.max(VIRT_H - 300, y);
+          if (Math.random() < 0.25) y += 40;
+        }
+        list.push(new Rect(world.width - 460, VIRT_H - 220, 100, 16));
+        list.push(new Rect(world.width - 300, VIRT_H - 280, 120, 16));
+        return list;
+      }
+
+      function makeLevel() {
+        world.width = 2200 + Math.min(1600, level * 120);
+        world.platforms = buildReachablePlatforms(level);
+        world.coins = []; world.spikes = []; world.goblins = []; world.waters = []; arrows.length = 0;
+
+        // coins (currency)
+        for (let i = 0; i < 8 + level * 2; i++) {
+          const p = world.platforms[1 + Math.floor(rng(0, world.platforms.length - 2))];
+          world.coins.push(new Coin(p.x + rng(12, Math.max(14, p.w - 18)), p.y - 20));
+        }
+
+        // spikes after level 2
+        const spikeCount = Math.max(0, level - 2) * 3;
+        for (let i = 0; i < spikeCount; i++) {
+          const base = world.platforms[0];
+          const sx = rng(180, world.width - 220);
+          world.spikes.push(new Spike(sx, base.y - 14, 24, 14));
+        }
+
+        // river: one or two sections
+        const rivers = Math.min(2, Math.floor((level + 1) / 3));
+        for (let i = 0; i < rivers; i++) {
+          const rx = rng(500, world.width - 600);
+          const rw = 180 + Math.min(240, level * 20);
+          world.waters.push(new Water(rx, VIRT_H - 28, rw, 28));
+        }
+
+        // goblins
+        const count = 2 + Math.min(12, Math.floor(level * 1.5));
+        for (let i = 0; i < count; i++) {
+          const p = world.platforms[1 + Math.floor(rng(0, world.platforms.length - 2))];
+          const weapon = (i % 2 === 0) ? 'sword' : 'bow';
+          const g = new Goblin(p.x + rng(8, Math.max(10, p.w - 32)), p.y - 36, weapon);
+          g.patrol.min = p.x + 6; g.patrol.max = p.x + p.w - 6; g.dir = Math.random() < 0.5 ? -1 : 1;
+          g.speed = 1.4 + Math.min(1.4, level * 0.08);
+          world.goblins.push(g);
+        }
+
+        // portal
+        world.portal = new Rect(world.width - 140, VIRT_H - 210, 34, 170);
+      }
+
+      function resetAll() { score = 0; gold = 0; kills = 0; lives = 3; level = 1; makeLevel(); resetPlayer(true); updateHUD(); }
+      function resetPlayer(toStart = false) { if (toStart) { player.x = 60; } player.y = VIRT_H - 140; player.vx = 0; player.vy = 0; player.onGround = false; player.inv = 40; camX = clamp(player.x - VIRT_W * 0.3, 0, world.width - VIRT_W); }
+
+      // ====== Input (Arrows + WASD) ======
+      window.addEventListener('keydown', e => {
+        const k = e.key.toLowerCase();
+        if (k === 'arrowleft' || k === 'a') KEYS.left = true;
+        if (k === 'arrowright' || k === 'd') KEYS.right = true;
+        if (k === 'arrowup' || k === 'w' || k === ' ') { KEYS.up = true; doJump(); }
+        if (k === 'p') togglePause();
+      });
+      window.addEventListener('keyup', e => {
+        const k = e.key.toLowerCase();
+        if (k === 'arrowleft' || k === 'a') KEYS.left = false;
+        if (k === 'arrowright' || k === 'd') KEYS.right = false;
+        if (k === 'arrowup' || k === 'w' || k === ' ') KEYS.up = false;
+      });
+
+      function togglePause() { if (!running) return; paused = !paused; overlay.style.display = paused ? 'grid' : 'none'; if (paused) overlayCard.innerHTML = `<div class="title">พักเกม</div><div class="subtitle">กดปุ่มเพื่อเล่นต่อ</div><div class="row"><button class="btn" id="resumeBtn">เล่นต่อ</button><button class="btn secondary" id="restartBtn">เริ่มใหม่</button></div>`; if (paused) { document.getElementById('resumeBtn').onclick = togglePause; document.getElementById('restartBtn').onclick = () => { resetAll(); togglePause(); }; } }
+      function doJump() { if (!running || paused) return; if (player.onGround) { player.vy = -JUMP_V; player.onGround = false; } }
+
+      // ====== Collision handling ======
+      function resolveCollide(body, isVertical) {
+        for (const p of world.platforms) {
+          if (!aabb(body, p)) continue;
+          if (isVertical) {
+            if (body.vy > 0) { body.y = p.y - body.h; body.vy = 0; if (body === player) player.onGround = true; }
+            else if (body.vy < 0) { body.y = p.y + p.h; body.vy = 0.1; }
+          } else {
+            if (body.vx > 0) { body.x = p.x - body.w; body.vx = 0; }
+            else if (body.vx < 0) { body.x = p.x + p.w; body.vx = 0; }
+          }
+        }
+        // world floor
+        if (body.y + body.h > world.height) { body.y = world.height - body.h; body.vy = 0; if (body === player) player.onGround = true; }
+        // bounds X
+        if (body.x < 0) { body.x = 0; body.vx = 0; }
+        if (body.x + body.w > world.width) { body.x = world.width - body.w; body.vx = 0; }
+      }
+
+      function spawnArrow(x, y, vx, vy) { arrows.push(new Arrow(x, y, vx, vy)); }
+
+      // ====== Game flow ======
+      function nextLevel() { level++; makeLevel(); resetPlayer(true); updateHUD(); }
+      function loseLife({ respawn = false, knockback = 0 } = {}) { if (player.inv > 0) return; lives--; updateHUD(); if (lives <= 0) return gameOver(); player.inv = 60; if (respawn) resetPlayer(true); else { player.vx += knockback; /* ตาย-แต่ยังอยู่จุดเดิม */ } }
+      function gameOver() { running = false; paused = false; overlay.style.display = 'grid'; overlayCard.innerHTML = `<div class="title">Game Over</div><div class="subtitle">ผู้เล่น: ${playerName}</div><div class="row" style="justify-content:center">คะแนน: <b>${score}</b> • เหรียญ: <b>${gold}</b> • กำจัด: <b>${kills}</b> • เลเวลที่เล่น: <b>${level}</b></div><div class="row" style="margin-top:10px"><button class="btn" id="retryBtn">เริ่มใหม่ (ด่านเดิม)</button><button class="btn secondary" id="fullRestartBtn">เริ่มใหม่ทั้งหมด</button></div>`; document.getElementById('retryBtn').onclick = () => { overlay.style.display = 'none'; running = true; lives = 3; resetPlayer(true); updateHUD(); }; document.getElementById('fullRestartBtn').onclick = () => { overlay.style.display = 'none'; running = true; resetAll(); }; }
+
+      startBtn?.addEventListener('click', () => { playerName = nameInput.value || 'Player'; overlay.style.display = 'none'; running = true; resetAll(); });
+      howBtn?.addEventListener('click', () => {
+        alert('วิธีเล่น\n- เดิน: ลูกศรซ้าย/ขวา หรือ A/D\n- กระโดด: Space / ลูกศรขึ้น / W\n- หยุดชั่วคราว: P\n- เป้าหมาย: ไปที่ประตูมิติด้านขวาสุด เก็บเหรียญ ซื้อชุดแต่งในหน้าร้านหลังจบด่าน\n- โดนลูกธนู/หนาม: เสีย 1 ชีวิต แต่ยังอยู่ตำแหน่งเดิม (มีเวลาอมตะสั้นๆ)\n- ตกน้ำ: เสีย 1 ชีวิตและเริ่มจากจุดเริ่มต้น\n- ชีวิตหมด 0: ต้องเริ่มใหม่จนกว่าจะผ่าน; กดเริ่มใหม่จะได้ 3 ชีวิตคืน');
+      });
+
+      // ====== Update ======
+      function update() {
+        // player input
+        const left = KEYS.left, right = KEYS.right;
+        if (left && !right) player.vx -= MOVE; else if (right && !left) player.vx += MOVE; else player.vx *= FRICTION;
+        player.vx = Math.max(-MAX_VX, Math.min(MAX_VX, player.vx));
+        player.vy += G;
+
+        // collisions
+        player.onGround = false;
+        player.y += player.vy; resolveCollide(player, true);
+        player.x += player.vx; resolveCollide(player, false);
+
+        // hazards: spikes
+        for (const s of world.spikes) { if (aabb(player, s) && player.inv <= 0) { loseLife({ respawn: false, knockback: (player.x < s.x ? -3 : 3) }); } }
+
+        // water (river)
+        for (const w of world.waters) { if (aabb(player, w) && player.inv <= 0) { loseLife({ respawn: true }); } }
+
+        // coins
+        for (const c of world.coins) { if (!c.gone && aabb(player, c)) { c.gone = true; score += 10; gold += 10; updateHUD(); } c.t += 0.08; }
+
+        // goblins
+        for (const g of world.goblins) {
+          g.update(); if (g.dead) continue; // stomp
+          if (aabb(player, g)) {
+            const falling = player.vy > 1.1; const verticalDelta = (player.y + player.h) - g.y;
+            if (falling && verticalDelta < 16) { g.dead = true; kills++; score += 50; gold += 25; player.vy = -JUMP_V * 0.7; updateHUD(); }
+            else if (player.inv <= 0) { loseLife({ respawn: false, knockback: (player.x < g.x ? -3 : 3) }); }
+          }
+        }
+
+        // arrows
+        for (let i = arrows.length - 1; i >= 0; i--) { const a = arrows[i]; a.x += a.vx; a.y += a.vy; if (a.x < -60 || a.x > world.width + 60) { arrows.splice(i, 1); continue; } if (aabb(player, a)) { arrows.splice(i, 1); if (player.inv <= 0) { loseLife({ respawn: false, knockback: (player.x < a.x ? -4 : 4) }); } } for (const p of world.platforms) { if (aabb(a, p)) { arrows.splice(i, 1); break; } } }
+
+        // reach portal
+        if (aabb(player, world.portal)) levelSummary();
+
+        // camera follows player
+        const target = player.x - VIRT_W * 0.4;
+        camX += (clamp(target, 0, world.width - VIRT_W) - camX) * 0.15;
+
+        if (player.inv > 0) player.inv--;
+      }
+
+      // ====== Level Summary + Shop ======
+      function levelSummary() { running = false; overlay.style.display = 'grid'; overlayCard.innerHTML = `<div class="title">ผ่านด่าน!</div><div class="subtitle">ผู้เล่น: ${playerName}</div><div class="row" style="justify-content:center">คะแนน: <b>${score}</b> • เหรียญ: <b>${gold}</b> • ชีวิต: <b>${lives}</b> • กำจัด: <b>${kills}</b> • เลเวล: <b>${level}</b></div><div class="row" style="margin-top:10px"><button class="btn" id="nextBtn">ด่านต่อไป</button><button class="btn secondary" id="replayBtn">เล่นซ้ำด่านนี้</button><button class="btn" id="customBtn">ตกแต่งตัวละคร</button></div>`; document.getElementById('nextBtn').onclick = () => { overlay.style.display = 'none'; running = true; nextLevel(); }; document.getElementById('replayBtn').onclick = () => { overlay.style.display = 'none'; running = true; makeLevel(); resetPlayer(true); }; document.getElementById('customBtn').onclick = openShop; }
+
+      function openShop() {
+        const itemsHtml = shop.map(it => {
+          const owned = (it.type === 'color') ? false : !!inventory[it.key];
+          const canBuy = gold >= it.price;
+          const action = (it.type === 'color') ? `<input type="color" id="colorPick" value="${inventory.color}" style="margin-right:6px;"> <button class="btn" id="buy_${it.key}">ซื้อ/เปลี่ยน (${it.price})</button>`
+            : owned ? `<button class="btn secondary" id="equip_${it.key}">${inventory[it.key] ? 'ถอด' : 'สวม'}</button>`
+              : `<button class="btn ${canBuy ? '' : 'secondary'}" id="buy_${it.key}" ${canBuy ? '' : 'disabled'}>ซื้อ (${it.price})</button>`;
+          return `<div class="shop-item"><div class="shop-h">${it.name}</div><div style="font-size:13px;opacity:.75">${it.desc}</div><div class="row" style="justify-content:space-between;margin-top:6px"><span class="price">${it.price} เหรียญ</span>${action}</div></div>`;
+        }).join('');
+        overlayCard.innerHTML = `<div class="title">ตกแต่งตัวละคร</div><div class="subtitle">เหรียญที่มี: <b>${gold}</b> • เลเวล: ${level}</div><div class="shop-grid">${itemsHtml}</div><div class="row" style="margin-top:10px"><button class="btn" id="backBtn">กลับ</button></div>`;
+
+        // bind actions
+        shop.forEach(it => {
+          const buyBtn = document.getElementById(`buy_${it.key}`);
+          const equipBtn = document.getElementById(`equip_${it.key}`);
+          if (it.type === 'color' && buyBtn) {
+            buyBtn.onclick = () => {
+              const picker = document.getElementById('colorPick');
+              if (gold >= it.price) { gold -= it.price; inventory.color = picker.value; updateHUD(); openShop(); }
+            };
+          } else {
+            if (buyBtn) { buyBtn.onclick = () => { if (gold >= it.price && !inventory[it.key]) { gold -= it.price; inventory[it.key] = true; updateHUD(); openShop(); } }; }
+            if (equipBtn) { equipBtn.onclick = () => { inventory[it.key] = !inventory[it.key]; openShop(); } }
+          }
+        });
+
+        document.getElementById('backBtn').onclick = levelSummary;
+      }
+
+      // ====== Draw ======
+      function draw() {
+        ctx.save();
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.scale(scale, scale);
+        ctx.translate(-camX, 0);
+
+        // background clouds
+        for (let i = 0; i < 18; i++) { const x = (i * 240 + (Date.now() / 60) % (VIRT_W)) % (world.width); const y = 40 + (i * 37 % 140); drawCloud(x, y, 0.6); }
+
+        // platforms
+        for (const p of world.platforms) { ctx.fillStyle = '#fbbf24'; ctx.fillRect(p.x, p.y, p.w, p.h); ctx.fillStyle = 'rgba(255,255,255,.25)'; ctx.fillRect(p.x, p.y, p.w, 3); }
+
+        // water
+        for (const w of world.waters) { drawWater(w); }
+
+        // spikes
+        for (const s of world.spikes) { drawSpike(s); }
+
+        // portal
+        drawPortal(world.portal);
+
+        // coins
+        for (const c of world.coins) { if (c.gone) continue; const yy = c.y + Math.sin(c.t) * 2; ctx.fillStyle = '#fde047'; ctx.beginPath(); ctx.arc(c.x + 8, yy + 8, 7, 0, Math.PI * 2); ctx.fill(); ctx.fillStyle = 'rgba(255,255,255,.4)'; ctx.fillRect(c.x + 6, yy + 4, 4, 4); }
+
+        // goblins
+        for (const g of world.goblins) { if (g.dead) { ctx.globalAlpha = .35; ctx.fillStyle = '#94a3b8'; ctx.fillRect(g.x, g.y + g.h - 6, g.w, 6); ctx.globalAlpha = 1; continue; } drawGoblin(g); }
+
+        // arrows
+        ctx.fillStyle = '#7c3aed'; for (const a of arrows) { ctx.fillRect(a.x, a.y, a.w, a.h); }
+
+        // stickman
+        drawStickman(player);
+
+        ctx.restore();
+      }
+
+      function drawCloud(x, y, s = 1) { ctx.save(); ctx.globalAlpha = .6; ctx.fillStyle = 'rgba(255,255,255,.9)'; ctx.beginPath(); ctx.arc(x, y, 16 * s, 0, Math.PI * 2); ctx.arc(x + 20 * s, y + 6 * s, 20 * s, 0, Math.PI * 2); ctx.arc(x + 42 * s, y, 14 * s, 0, Math.PI * 2); ctx.fill(); ctx.restore(); }
+      function drawStickman(p) {
+        ctx.save(); const col = inventory.color || '#111'; ctx.strokeStyle = col; ctx.lineWidth = 3; // head
+        ctx.beginPath(); ctx.arc(p.x + p.w / 2, p.y + 10, 9, 0, Math.PI * 2); ctx.stroke(); // body
+        ctx.beginPath(); ctx.moveTo(p.x + p.w / 2, p.y + 18); ctx.lineTo(p.x + p.w / 2, p.y + 34); ctx.stroke(); // arms
+        ctx.beginPath(); ctx.moveTo(p.x + p.w / 2, p.y + 22); ctx.lineTo(p.x - 6, p.y + 26); ctx.moveTo(p.x + p.w / 2, p.y + 22); ctx.lineTo(p.x + p.w + 6, p.y + 26); ctx.stroke(); // legs
+        ctx.beginPath(); ctx.moveTo(p.x + p.w / 2, p.y + 34); ctx.lineTo(p.x, p.y + 48); ctx.moveTo(p.x + p.w / 2, p.y + 34); ctx.lineTo(p.x + p.w, p.y + 48); ctx.stroke();
+        // cosmetics
+        if (inventory.hat) { ctx.fillStyle = '#111827'; ctx.fillRect(p.x + p.w / 2 - 8, p.y - 2, 16, 4); ctx.fillRect(p.x + p.w / 2 - 4, p.y - 8, 8, 6); }
+        if (inventory.band) { ctx.fillStyle = '#ef4444'; ctx.fillRect(p.x + p.w / 2 - 10, p.y + 5, 20, 3); }
+        if (inventory.cape) { ctx.fillStyle = 'rgba(99,102,241,.9)'; ctx.beginPath(); ctx.moveTo(p.x + p.w / 2, p.y + 20); ctx.lineTo(p.x + p.w / 2 - 18, p.y + 36); ctx.lineTo(p.x + p.w / 2, p.y + 36); ctx.closePath(); ctx.fill(); }
+        // hurt blink
+        if (player.inv > 0) { ctx.globalAlpha = 0.45 + 0.55 * Math.sin(player.inv * 0.4); }
+        ctx.restore();
+      }
+      function drawGoblin(g) { ctx.save(); ctx.fillStyle = '#22c55e'; ctx.fillRect(g.x, g.y, g.w, g.h); ctx.fillStyle = 'rgba(0,0,0,.2)'; ctx.fillRect(g.x, g.y, g.w, 6); ctx.fillStyle = '#111'; ctx.fillRect(g.x + 6, g.y + 8, 4, 4); ctx.fillRect(g.x + g.w - 10, g.y + 8, 4, 4); if (g.weapon === 'sword') { ctx.fillStyle = '#9ca3af'; const sx = g.dir < 0 ? g.x - 8 : g.x + g.w; ctx.fillRect(sx, g.y + 16, 10, 4); ctx.fillStyle = '#a16207'; ctx.fillRect(sx - 2 * (g.dir < 0 ? 0 : 1), g.y + 20, 6, 6); } else { ctx.strokeStyle = '#a16207'; ctx.lineWidth = 3; const bx = g.dir < 0 ? g.x - 2 : g.x + g.w + 2; ctx.beginPath(); ctx.arc(bx, g.y + 18, 10, -Math.PI / 2, Math.PI / 2, g.dir > 0); ctx.stroke(); } ctx.restore(); }
+      function drawSpike(s) { ctx.save(); ctx.fillStyle = '#334155'; const n = Math.max(2, Math.floor(s.w / 6)); const step = s.w / n; for (let i = 0; i < n; i++) { ctx.beginPath(); ctx.moveTo(s.x + i * step, s.y + s.h); ctx.lineTo(s.x + i * step + step / 2, s.y); ctx.lineTo(s.x + (i + 1) * step, s.y + s.h); ctx.closePath(); ctx.fill(); } ctx.restore(); }
+      function drawWater(w) { ctx.save(); const t = Date.now() * 0.004; ctx.fillStyle = '#38bdf8'; ctx.fillRect(w.x, w.y, w.w, w.h); ctx.fillStyle = 'rgba(255,255,255,.6)'; for (let i = 0; i < w.w; i += 18) { const yy = Math.sin((i + t * 40) / 22) * 3; ctx.fillRect(w.x + i, w.y - 3 + yy, 14, 3); } ctx.restore(); }
+      function drawPortal(p) { ctx.save(); const t = Date.now() * 0.004; ctx.fillStyle = '#1f2937'; ctx.fillRect(p.x, p.y, p.w, p.h); const inset = 4; ctx.save(); ctx.beginPath(); ctx.rect(p.x + inset, p.y + inset, p.w - inset * 2, p.h - inset * 2); ctx.clip(); for (let i = 0; i < 12; i++) { const ph = (i / 12) * (p.h - inset * 2); ctx.fillStyle = `hsl(${(i * 30 + t * 60) % 360} 90% 60%)`; ctx.fillRect(p.x + inset, p.y + inset + ph, p.w - inset * 2, 6); } ctx.restore(); ctx.restore(); }
+
+      // ====== Main loop ======
+      function loop() { if (running && !paused) { update(); } draw(); requestAnimationFrame(loop); }
+      loop();
+    })();
+  </script>
+</body>
+
+</html>

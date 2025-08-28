@@ -1,0 +1,1099 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Fruit Slice 🍉 + Bombs 💣 – สวย ลื่น ไหลลื่น</title>
+  <style>
+    :root {
+      --bg1: #0b0f1e;
+      --bg2: #171b33;
+      --accent: #7c5cff;
+      --text: #f5f7ff;
+      --muted: #a2acbd;
+    }
+
+    html,
+    body {
+      height: 100%;
+      margin: 0
+    }
+
+    body {
+      font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", "Helvetica Neue", Arial;
+      color: var(--text);
+      background:
+        radial-gradient(1200px 700px at 20% -10%, #29306a 0%, transparent 60%),
+        radial-gradient(900px 600px at 110% 10%, #5b2ba8 0%, transparent 55%),
+        linear-gradient(180deg, var(--bg1), var(--bg2));
+      overflow-x: hidden;
+    }
+
+    .wrap {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100%;
+      padding: 24px
+    }
+
+    .card {
+      width: min(100%, 1080px);
+      border-radius: 24px;
+      padding: 20px;
+      position: relative;
+      isolation: isolate;
+      background: rgba(255, 255, 255, 0.04);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, .35), 0 0 0 1px rgba(255, 255, 255, .06) inset;
+      backdrop-filter: blur(8px);
+    }
+
+    .title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 0 8px 12px
+    }
+
+    .title h1 {
+      margin: 0;
+      font-size: clamp(20px, 3vw, 28px)
+    }
+
+    .stat {
+      display: flex;
+      gap: 14px;
+      align-items: center;
+      font-weight: 700;
+      flex-wrap: wrap
+    }
+
+    .pill {
+      border: 1px solid rgba(255, 255, 255, .12);
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(0, 0, 0, .15)
+    }
+
+    canvas {
+      width: 100%;
+      aspect-ratio: 16/9;
+      background:
+        radial-gradient(800px 480px at 50% 120%, rgba(255, 255, 255, .06), transparent),
+        linear-gradient(180deg, rgba(255, 255, 255, .05), rgba(255, 255, 255, .02));
+      border-radius: 18px;
+      display: block;
+      box-shadow: 0 12px 36px rgba(0, 0, 0, .45);
+      cursor: crosshair;
+    }
+
+    .overlay {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none
+    }
+
+    .center {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+      text-align: center
+    }
+
+    .btn {
+      pointer-events: auto;
+      cursor: pointer;
+      user-select: none;
+      border: none;
+      outline: none;
+      font-weight: 800;
+      letter-spacing: .2px;
+      padding: 14px 20px;
+      border-radius: 14px;
+      background: linear-gradient(180deg, #8f75ff, #6a4bff);
+      color: white;
+      box-shadow: 0 12px 30px rgba(124, 92, 255, .35)
+    }
+
+    .btn:active {
+      transform: translateY(1px)
+    }
+
+    .hint {
+      color: var(--muted);
+      font-size: 14px
+    }
+
+    .badge {
+      position: absolute;
+      top: 18px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 12px;
+      letter-spacing: .4px;
+      opacity: .9;
+      background: rgba(0, 0, 0, .35);
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, .08)
+    }
+
+    .row {
+      margin-top: 14px
+    }
+
+    .ipt {
+      pointer-events: auto;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, .15);
+      background: rgba(0, 0, 0, .25);
+      color: var(--text);
+      padding: 10px 12px;
+      min-width: 240px
+    }
+
+    .table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0 8px;
+      margin-top: 14px
+    }
+
+    .table th {
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 700;
+      text-align: left;
+      padding: 0 8px
+    }
+
+    .table td {
+      padding: 10px 8px;
+      background: rgba(255, 255, 255, .04);
+      border-top: 1px solid rgba(255, 255, 255, .06);
+      border-bottom: 1px solid rgba(255, 255, 255, .06)
+    }
+
+    .table tr td:first-child {
+      border-left: 1px solid rgba(255, 255, 255, .06);
+      border-top-left-radius: 10px;
+      border-bottom-left-radius: 10px
+    }
+
+    .table tr td:last-child {
+      border-right: 1px solid rgba(255, 255, 255, .06);
+      border-top-right-radius: 10px;
+      border-bottom-right-radius: 10px
+    }
+
+    .backbtn {
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      background-color: #8690C1;
+      color: #141B3D;
+      font-family: 'Courier New', Courier, monospace;
+      font-weight: bold;
+      font-size: 20px;
+      border-color: #141B3D;
+      border-style: solid;
+      cursor: pointer;
+      border-radius: 30px;
+      border-width: 4px;
+      transition: opacity 0.5s;
+      padding: 20px 50px;
+    }
+
+    .backbtn:hover {
+      opacity: 0.75;
+    }
+
+    .backbtn:active {
+      opacity: 0.5;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <div class="card">
+      <div class="title">
+        <h1>Fruit Slice <span aria-hidden>🍉</span> + Bombs <span aria-hidden>💣</span></h1>
+        <div class="stat">
+          <div class="pill">ผู้เล่น: <span id="playerLabel">-</span></div>
+          <div class="pill">คะแนน: <span id="score">0</span></div>
+          <div class="pill">สูงสุด: <span id="best">0</span></div>
+          <div class="pill">ชีวิต: ∞ (ห้ามฟันระเบิด)</div>
+        </div>
+      </div>
+      <canvas id="game" aria-label="Fruit Slice game" role="img"></canvas>
+      <div class="badge">ลากเมาส์/นิ้วเพื่อฟันผลไม้ – <b>ห้ามฟันระเบิด</b>! ✂️💣</div>
+      <div class="overlay" id="overlay">
+        <div class="center">
+          <div style="font-size:clamp(18px,2.2vw,22px); font-weight:700">ตั้งชื่อผู้เล่นก่อนเริ่ม 📝</div>
+          <div class="row">
+            <input id="nameInput" class="ipt" placeholder="เช่น: PPP" maxlength="20" />
+          </div>
+          <button class="btn" id="startBtn" disabled>เริ่มเกม</button>
+          <div class="hint">Desktop: ลากเมาส์เร็ว ๆ เพื่อฟัน • มือถือ: ลากนิ้วบนจอ</div>
+        </div>
+      </div>
+
+      <div class="row">
+        <h3 style="margin:8px 8px 0; font-size:16px">🏆 สถิติผู้เล่นทั้งหมด (เครื่องนี้)</h3>
+        <table class="table" aria-label="สถิติผู้เล่นทั้งหมด">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>ผู้เล่น</th>
+              <th>คะแนนสูงสุด</th>
+              <th>จำนวนรอบ</th>
+              <th>คะแนนล่าสุด</th>
+              <th>อัปเดต</th>
+            </tr>
+          </thead>
+          <tbody id="boardBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <button class="backbtn" onclick="location.href='../pages/games.html'">
+    ⟡ Back ⟡</button>
+
+  <script>
+    (() => {
+      // ===== Basic refs =====
+      const canvas = document.getElementById('game');
+      const ctx = canvas.getContext('2d');
+      const scoreEl = document.getElementById('score');
+      const bestEl = document.getElementById('best');
+      const overlay = document.getElementById('overlay');
+      const startBtn = document.getElementById('startBtn');
+      const nameInput = document.getElementById('nameInput');
+      const playerLabel = document.getElementById('playerLabel');
+      const boardBody = document.getElementById('boardBody');
+
+      // ===== DPR-scaling canvas =====
+      let vw, vh, dpr;
+      function resize() {
+        const rect = canvas.getBoundingClientRect();
+        vw = Math.max(640, Math.floor(rect.width));
+        vh = Math.floor(vw / (16 / 9));
+        dpr = Math.min(window.devicePixelRatio || 1, 2);
+        canvas.width = Math.floor(vw * dpr);
+        canvas.height = Math.floor(vh * dpr);
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      }
+      window.addEventListener('resize', resize, { passive: true });
+      resize();
+
+      // ===== Leaderboard (local) =====
+      const LB_KEY = 'fruit_leaderboard_v3';
+      const BEST_KEY = 'fruit_best_global_v3';
+      function loadBoard() { try { return JSON.parse(localStorage.getItem(LB_KEY) || '[]'); } catch { return []; } }
+      function saveBoard(d) { localStorage.setItem(LB_KEY, JSON.stringify(d)); }
+      function renderBoard() {
+        const data = loadBoard().slice().sort((a, b) => b.best - a.best || a.name.localeCompare(b.name));
+        boardBody.innerHTML = data.map((p, i) => `<tr>
+      <td>${i + 1}</td><td>${p.name}</td><td>${p.best || 0}</td><td>${p.plays || 0}</td><td>${p.lastScore || 0}</td><td>${new Date(p.updatedAt || Date.now()).toLocaleString()}</td>
+    </tr>`).join('');
+      }
+
+      // ===== Game state =====
+      const state = {
+        running: false,
+        player: "",
+        score: 0,
+        best: Number(localStorage.getItem(BEST_KEY) || 0),
+        fruits: [],
+        halves: [],
+        splats: [],
+        decals: [], // คราบน้ำผลไม้บนฉากหลัง
+        popups: [], // คะแนนลอย
+        slashes: [], // แฟลชคมดาบ
+        trail: [],
+        spawnTimer: 0,
+        spawnInterval: 1100,
+        time: 0,
+        shake: 0,
+        audio: null,
+      };
+      bestEl.textContent = state.best;
+
+      // ===== Audio (WebAudio, เบา ๆ ไม่หน่วง) =====
+      function initAudio() {
+        if (state.audio) return;
+        const ac = new (window.AudioContext || window.webkitAudioContext)();
+        state.audio = ac;
+      }
+      function beep(freq = 600, t = 0.06, type = 'triangle', gain = 0.03) {
+        if (!state.audio) return; const ac = state.audio;
+        const o = ac.createOscillator(); const g = ac.createGain();
+        o.type = type; o.frequency.value = freq; g.gain.value = gain;
+        o.connect(g).connect(ac.destination); o.start(); g.gain.exponentialRampToValueAtTime(0.0001, ac.currentTime + t); o.stop(ac.currentTime + t);
+      }
+      function sfxSlice() { beep(740, 0.05, 'sawtooth', 0.03); beep(1180, 0.05, 'triangle', 0.02); }
+      function sfxBomb() { beep(120, 0.22, 'square', 0.06); setTimeout(() => beep(80, 0.25, 'sawtooth', 0.05), 40); }
+
+      // ===== Utils =====
+      const rand = (a, b) => Math.random() * (b - a) + a;
+      const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+
+      // ===== Entities =====
+      const FRUITS = [
+        { name: 'watermelon', color: '#2ecc71', juice: '#6effa1' },
+        { name: 'orange', color: '#ffa62b', juice: '#ffd18a' },
+        { name: 'blueberry', color: '#4f5bd5', juice: '#9aa8ff' },
+        { name: 'dragon', color: '#ff4d6d', juice: '#ffb3c1' },
+        { name: 'lemon', color: '#ffd43b', juice: '#fff4a3' },
+        { name: 'kiwi', color: '#8bc34a', juice: '#d1ff9e' }
+      ];
+
+      function spawnFruitOrBomb() {
+        const isBomb = Math.random() < Math.min(0.12 + state.score * 0.0025, 0.25);
+        if (isBomb) {
+          const radius = rand(22, 30);
+          const x = rand(60, vw - 60);
+          const y = vh + radius + rand(10, 40);
+          const speed = rand(11, 14);
+          const vy = -speed - rand(0, 6);
+          const vx = rand(-6, 6);
+          const rot = rand(0, Math.PI * 2);
+          const vr = rand(-0.12, 0.12);
+          state.fruits.push({ x, y, vx, vy, radius, rot, vr, isBomb: true, sliced: false });
+          return;
+        }
+        const type = FRUITS[Math.floor(Math.random() * FRUITS.length)];
+        const radius = rand(24, 36);
+        const x = rand(60, vw - 60);
+        const y = vh + radius + rand(10, 40);
+        const speed = rand(11, 14);
+        const vy = -speed - rand(0, 6);
+        const vx = rand(-6, 6);
+        const rot = rand(0, Math.PI * 2);
+        const vr = rand(-0.1, 0.1);
+        state.fruits.push({ x, y, vx, vy, radius, type, rot, vr, isBomb: false, sliced: false, shadow: rand(0.7, 1) });
+      }
+
+      function spawnSplat(x, y, color, count = 24) {
+        for (let i = 0; i < count; i++) {
+          const a = rand(0, Math.PI * 2);
+          const sp = rand(2, 8);
+          state.splats.push({ x, y, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp, r: rand(2, 4), life: 1, color });
+        }
+        // decal คราบยาว ๆ ติดฉาก
+        state.decals.push({ x, y, r: rand(18, 34), color, life: 1 });
+      }
+
+      function popup(x, y, txt) { state.popups.push({ x, y, txt, vy: -0.4, life: 1 }); }
+      function slashFlash(ax, ay, bx, by) { state.slashes.push({ ax, ay, bx, by, life: 1 }); }
+
+      // ===== Draw helpers =====
+      function drawFruit(f) {
+        ctx.save();
+        ctx.translate(f.x, f.y); ctx.rotate(f.rot);
+
+        if (f.isBomb) {
+          const g = ctx.createRadialGradient(-f.radius * 0.2, -f.radius * 0.2, f.radius * 0.2, 0, 0, f.radius);
+          g.addColorStop(0, '#4a4a4a'); g.addColorStop(1, '#0c0c0c');
+          ctx.fillStyle = g; ctx.beginPath(); ctx.arc(0, 0, f.radius, 0, Math.PI * 2); ctx.fill();
+          const blink = (Math.sin(state.time / 90) + 1) / 2; ctx.fillStyle = `rgba(255,60,60,${0.5 + blink * 0.5})`;
+          ctx.beginPath(); ctx.arc(0, -f.radius * 0.6, 5 + blink * 3, 0, Math.PI * 2); ctx.fill();
+          ctx.fillStyle = 'rgba(255,255,255,.9)'; ctx.beginPath(); ctx.moveTo(-8, 6); ctx.lineTo(0, -8); ctx.lineTo(8, 6); ctx.closePath(); ctx.fill();
+          ctx.fillStyle = '#0c0c0c'; ctx.beginPath(); ctx.arc(0, 2, 3, 0, Math.PI * 2); ctx.fill();
+          ctx.restore(); return;
+        }
+
+        // shadow
+        ctx.save(); ctx.globalAlpha = 0.25; ctx.scale(1, 0.3); ctx.beginPath(); ctx.arc(0, f.radius * 3.2, f.radius * 0.9, 0, Math.PI * 2); ctx.fillStyle = '#000'; ctx.fill(); ctx.restore();
+
+        const g = ctx.createRadialGradient(-f.radius * 0.2, -f.radius * 0.2, f.radius * 0.2, 0, 0, f.radius);
+        g.addColorStop(0, 'white'); g.addColorStop(1, f.type.color);
+        ctx.fillStyle = g; ctx.beginPath(); ctx.arc(0, 0, f.radius, 0, Math.PI * 2); ctx.fill();
+        ctx.beginPath(); ctx.ellipse(-f.radius * 0.3, -f.radius * 0.3, f.radius * 0.25, f.radius * 0.15, -0.7, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(255,255,255,.35)'; ctx.fill();
+        if (f.type && (f.type.name === 'kiwi' || f.type.name === 'watermelon')) {
+          ctx.fillStyle = 'rgba(0,0,0,.35)';
+          for (let i = 0; i < 8; i++) { const a = (i / 8) * Math.PI * 2; ctx.beginPath(); ctx.ellipse(Math.cos(a) * f.radius * 0.5, Math.sin(a) * f.radius * 0.5, 2, 4, a, 0, Math.PI * 2); ctx.fill(); }
+        }
+        ctx.restore();
+      }
+
+      function drawHalf(h) {
+        ctx.save(); ctx.translate(h.x, h.y); ctx.rotate(h.rot); ctx.globalAlpha = clamp(h.life, 0, 1);
+        const theta = h.angle; const start = theta + (h.side > 0 ? -Math.PI / 2 : Math.PI / 2); const end = theta + (h.side > 0 ? Math.PI / 2 : 3 * Math.PI / 2);
+        ctx.beginPath(); ctx.arc(0, 0, h.radius, start, end, h.side < 0); ctx.lineTo(0, 0); ctx.closePath(); ctx.clip();
+        const g = ctx.createRadialGradient(-h.radius * 0.2, -h.radius * 0.2, h.radius * 0.2, 0, 0, h.radius);
+        g.addColorStop(0, 'white'); g.addColorStop(1, h.type.color);
+        ctx.fillStyle = g; ctx.beginPath(); ctx.arc(0, 0, h.radius, 0, Math.PI * 2); ctx.fill();
+        ctx.globalAlpha = 0.9; ctx.strokeStyle = h.type.juice; ctx.lineWidth = 4; ctx.beginPath(); ctx.arc(0, 0, h.radius, start, end, h.side < 0); ctx.stroke();
+        ctx.globalAlpha = 1; ctx.restore();
+      }
+
+      function drawSplat(p) { ctx.globalAlpha = clamp(p.life, 0, 1); ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.fillStyle = p.color; ctx.fill(); ctx.globalAlpha = 1; }
+
+      function drawDecals() { // ฉากหลังคราบน้ำผลไม้
+        for (let i = state.decals.length - 1; i >= 0; i--) {
+          const d = state.decals[i]; d.life -= 0.002; if (d.life <= 0) { state.decals.splice(i, 1); continue; }
+          ctx.globalAlpha = 0.18 * d.life; ctx.beginPath(); ctx.arc(d.x, d.y, d.r, 0, Math.PI * 2); ctx.fillStyle = d.color; ctx.fill(); ctx.globalAlpha = 1;
+        }
+      }
+
+      function drawPopups() {
+        for (let i = state.popups.length - 1; i >= 0; i--) {
+          const p = state.popups[i]; p.y += p.vy; p.life -= 0.02; if (p.life <= 0) { state.popups.splice(i, 1); continue; }
+          ctx.globalAlpha = p.life; ctx.font = '700 18px system-ui,Segoe UI,Roboto'; ctx.fillStyle = '#fff'; ctx.fillText(p.txt, p.x, p.y); ctx.globalAlpha = 1;
+        }
+      }
+
+      function drawSlashes() {
+        for (let i = state.slashes.length - 1; i >= 0; i--) {
+          const s = state.slashes[i]; s.life -= 0.04; if (s.life <= 0) { state.slashes.splice(i, 1); continue; }
+          const { ax, ay, bx, by } = s; const alpha = s.life; const w = 22 * alpha;
+          ctx.save(); ctx.globalCompositeOperation = 'lighter';
+          ctx.strokeStyle = `rgba(255,255,255,${0.7 * alpha})`; ctx.lineWidth = w; ctx.lineCap = 'round'; ctx.beginPath(); ctx.moveTo(ax, ay); ctx.lineTo(bx, by); ctx.stroke();
+          ctx.strokeStyle = `rgba(124,92,255,${0.7 * alpha})`; ctx.lineWidth = w * 0.5; ctx.beginPath(); ctx.moveTo(ax, ay); ctx.lineTo(bx, by); ctx.stroke();
+          ctx.restore();
+        }
+      }
+
+      function lineCircleIntersect(ax, ay, bx, by, cx, cy, r) {
+        const abx = bx - ax, aby = by - ay; const t = clamp(((cx - ax) * abx + (cy - ay) * aby) / (abx * abx + aby * aby), 0, 1);
+        const px = ax + abx * t, py = ay + aby * t; const dx = px - cx, dy = py - cy; return (dx * dx + dy * dy) <= r * r;
+      }
+
+      // ===== Loop =====
+      function update(dt) {
+        state.time += dt; state.shake *= 0.92;
+
+        // spawn logic
+        state.spawnTimer -= dt; if (state.spawnTimer <= 0) { const n = Math.random() < 0.15 ? 2 : 1; for (let i = 0; i < n; i++) spawnFruitOrBomb(); const minInterval = 420; state.spawnInterval = clamp(1100 - state.score * 6, minInterval, 1100); state.spawnTimer = state.spawnInterval; }
+
+        // physics fruits
+        const g = 0.28;
+        for (let i = state.fruits.length - 1; i >= 0; i--) { const f = state.fruits[i]; f.vy += g; f.x += f.vx; f.y += f.vy; f.rot += f.vr || 0; if (f.y - f.radius > vh + 60) { state.fruits.splice(i, 1); } }
+
+        // halves physics
+        for (let i = state.halves.length - 1; i >= 0; i--) { const h = state.halves[i]; h.vy += g * 0.9; h.x += h.vx; h.y += h.vy; h.rot += h.vr; h.life -= 0.01; if (h.life <= 0 || h.y - h.radius > vh + 80) { state.halves.splice(i, 1); } }
+
+        // splats
+        for (let i = state.splats.length - 1; i >= 0; i--) { const p = state.splats[i]; p.vy += 0.18; p.x += p.vx; p.y += p.vy; p.life -= 0.01; if (p.life <= 0) state.splats.splice(i, 1); }
+
+        // trim trail
+        const keepMs = 160; for (let i = state.trail.length - 1; i >= 0; i--) { if (state.time - state.trail[i].t > keepMs) state.trail.splice(i, 1); }
+
+        // slice detection
+        if (state.trail.length >= 2) {
+          const segs = []; for (let i = 1; i < state.trail.length; i++) { const a = state.trail[i - 1], b = state.trail[i]; const dtp = Math.max(1, b.t - a.t); const speed = Math.hypot(b.x - a.x, b.y - a.y) / dtp; if (speed > 0.5) segs.push([a, b]); }
+          for (const f of state.fruits) {
+            if (f.sliced) continue; for (const [a, b] of segs) {
+              if (lineCircleIntersect(a.x, a.y, b.x, b.y, f.x, f.y, f.radius)) {
+                f.sliced = true; slashFlash(a.x, a.y, b.x, b.y); const dx = b.x - a.x, dy = b.y - a.y; const len = Math.max(1, Math.hypot(dx, dy)); const nx = dx / len, ny = dy / len; const px = -ny, py = nx;
+                if (f.isBomb) { spawnSplat(f.x, f.y, 'rgba(255,60,60,.9)', 160); spawnSplat(f.x, f.y, 'rgba(255,200,200,.8)', 100); state.shake = 16; sfxBomb(); endGame('bomb'); }
+                else { state.score += 1; scoreEl.textContent = state.score; spawnSplat(f.x, f.y, f.type.juice, 38); popup(f.x + 6, f.y - 10, '+1'); sfxSlice(); const base = { radius: f.radius, type: f.type, life: 1 }; state.halves.push({ x: f.x + px * 4, y: f.y + py * 4, vx: f.vx + px * 2 + nx * 0.6, vy: f.vy + py * 2 - 1, rot: f.rot, vr: (f.vr || 0) - 0.15, side: +1, angle: Math.atan2(py, px), ...base }); state.halves.push({ x: f.x - px * 4, y: f.y - py * 4, vx: f.vx - px * 2 + nx * 0.6, vy: f.vy - py * 2 - 1, rot: f.rot, vr: (f.vr || 0) + 0.15, side: -1, angle: Math.atan2(py, px), ...base }); }
+                state.fruits = state.fruits.filter(o => o !== f); break;
+              }
+            }
+          }
+        }
+      }
+
+      function draw() {
+        ctx.clearRect(0, 0, vw, vh);
+
+        // camera shake
+        ctx.save(); if (state.shake > 0) { ctx.translate((Math.random() - 0.5) * state.shake, (Math.random() - 0.5) * state.shake); }
+
+        // subtle grid background
+        const grid = 40; ctx.save(); ctx.globalAlpha = 0.05; for (let y = 0; y < vh; y += grid) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(vw, y); ctx.strokeStyle = '#fff'; ctx.lineWidth = 1; ctx.stroke(); } for (let x = 0; x < vw; x += grid) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, vh); ctx.strokeStyle = '#fff'; ctx.lineWidth = 1; ctx.stroke(); } ctx.restore();
+
+        drawDecals();
+        for (const p of state.splats) drawSplat(p);
+        for (const h of state.halves) drawHalf(h);
+        for (const f of state.fruits) drawFruit(f);
+        drawSlashes();
+
+        // sword trail (glow)
+        if (state.trail.length >= 2) { ctx.lineCap = 'round'; for (let i = 1; i < state.trail.length; i++) { const a = state.trail[i - 1], b = state.trail[i]; const age = (state.time - b.t); const alpha = clamp(1 - age / 140, 0, 1); const w = clamp(14 - age / 12, 2, 14); ctx.globalCompositeOperation = 'lighter'; ctx.strokeStyle = `rgba(255,255,255,${alpha})`; ctx.lineWidth = w; ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke(); ctx.strokeStyle = `rgba(124,92,255,${alpha * 0.7})`; ctx.lineWidth = w * 0.6; ctx.stroke(); ctx.globalCompositeOperation = 'source-over'; } }
+
+        drawPopups();
+
+        ctx.restore(); // end shake
+      }
+
+      // ===== Pointer =====
+      let pointerDown = false; function addPoint(x, y) { state.trail.push({ x, y, t: state.time }); }
+      function onPointerDown(e) { if (state.audio) state.audio.resume(); pointerDown = true; const r = canvas.getBoundingClientRect(); addPoint(e.clientX - r.left, e.clientY - r.top); }
+      function onPointerMove(e) { if (!pointerDown) return; const r = canvas.getBoundingClientRect(); addPoint(e.clientX - r.left, e.clientY - r.top); }
+      function onPointerUp() { pointerDown = false; }
+      canvas.addEventListener('pointerdown', onPointerDown); window.addEventListener('pointermove', onPointerMove); window.addEventListener('pointerup', onPointerUp);
+      canvas.addEventListener('touchstart', e => e.preventDefault(), { passive: false }); canvas.addEventListener('touchmove', e => e.preventDefault(), { passive: false });
+
+      // ===== Loop driver =====
+      let last = performance.now(); function loop(now) { const dt = Math.min(50, now - last); last = now; if (state.running) { update(dt); draw(); } requestAnimationFrame(loop); } requestAnimationFrame(loop);
+
+      // ===== Start/End =====
+      function startGame() { initAudio(); if (state.audio && state.audio.state === 'suspended') state.audio.resume(); state.running = true; state.score = 0; scoreEl.textContent = 0; state.fruits = []; state.splats = []; state.trail = []; state.halves = []; state.decals = []; state.popups = []; state.slashes = []; state.spawnTimer = 600; state.spawnInterval = 1100; state.time = 0; state.shake = 0; overlay.style.display = 'none'; playerLabel.textContent = state.player || '-'; }
+
+      function endGame(reason) {
+        state.running = false; state.fruits = []; const name = state.player; if (name) { const board = loadBoard(); const idx = board.findIndex(p => p.name === name); const now = new Date().toISOString(); if (idx === -1) { board.push({ name, best: state.score, plays: 1, lastScore: state.score, updatedAt: now }); } else { const p = board[idx]; p.best = Math.max(p.best || 0, state.score); p.plays = (p.plays || 0) + 1; p.lastScore = state.score; p.updatedAt = now; board[idx] = p; } saveBoard(board); renderBoard(); const globalBest = Math.max(...board.map(p => p.best || 0), 0); state.best = globalBest; localStorage.setItem(BEST_KEY, String(state.best)); bestEl.textContent = state.best; }
+        const msg = reason === 'bomb' ? 'โอ๊ย! ฟันโดนระเบิด 💥 (ห้ามฟันระเบิด)' : 'จบเกม!'; overlay.innerHTML = `<div class="center"><div style="font-size:clamp(18px,2.2vw,22px); font-weight:800">${msg}</div><div class="pill" style="font-weight:700">ผู้เล่น: ${state.player || '-'} • คะแนน: ${state.score} • สูงสุดรวม: ${state.best}</div><button class="btn" id="restartBtn">เล่นอีกครั้ง</button><div class="hint">Tip: ระวังระเบิดสีแดงกะพริบ ห้ามฟัน!</div></div>`; overlay.style.display = 'flex'; document.getElementById('restartBtn').addEventListener('click', startGame);
+      }
+
+      // ===== Board helpers =====
+      function loadBoard() { try { return JSON.parse(localStorage.getItem(LB_KEY) || '[]'); } catch { return []; } }
+      function saveBoard(data) { localStorage.setItem(LB_KEY, JSON.stringify(data)); localStorage.setItem(BEST_KEY, String(state.best)); }
+
+      // ===== UI =====
+      nameInput.addEventListener('input', () => { const v = nameInput.value.trim(); startBtn.disabled = !v; });
+      startBtn.addEventListener('click', () => { state.player = nameInput.value.trim().slice(0, 20) || 'Guest'; playerLabel.textContent = state.player; startGame(); });
+
+      // init
+      renderBoard();
+    })();
+  </script>
+</body>
+
+</html>
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Fruit Slice 🍉 + Bombs 💣 – สวย ลื่น ไหลลื่น</title>
+  <style>
+    :root {
+      --bg1: #0b0f1e;
+      --bg2: #171b33;
+      --accent: #7c5cff;
+      --text: #f5f7ff;
+      --muted: #a2acbd;
+    }
+
+    html,
+    body {
+      height: 100%;
+      margin: 0
+    }
+
+    body {
+      font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", "Helvetica Neue", Arial;
+      color: var(--text);
+      background:
+        radial-gradient(1200px 700px at 20% -10%, #29306a 0%, transparent 60%),
+        radial-gradient(900px 600px at 110% 10%, #5b2ba8 0%, transparent 55%),
+        linear-gradient(180deg, var(--bg1), var(--bg2));
+      overflow-x: hidden;
+    }
+
+    .wrap {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100%;
+      padding: 24px
+    }
+
+    .card {
+      width: min(100%, 1080px);
+      border-radius: 24px;
+      padding: 20px;
+      position: relative;
+      isolation: isolate;
+      background: rgba(255, 255, 255, 0.04);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, .35), 0 0 0 1px rgba(255, 255, 255, .06) inset;
+      backdrop-filter: blur(8px);
+    }
+
+    .title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 0 8px 12px
+    }
+
+    .title h1 {
+      margin: 0;
+      font-size: clamp(20px, 3vw, 28px)
+    }
+
+    .stat {
+      display: flex;
+      gap: 14px;
+      align-items: center;
+      font-weight: 700;
+      flex-wrap: wrap
+    }
+
+    .pill {
+      border: 1px solid rgba(255, 255, 255, .12);
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(0, 0, 0, .15)
+    }
+
+    canvas {
+      width: 100%;
+      aspect-ratio: 16/9;
+      background:
+        radial-gradient(800px 480px at 50% 120%, rgba(255, 255, 255, .06), transparent),
+        linear-gradient(180deg, rgba(255, 255, 255, .05), rgba(255, 255, 255, .02));
+      border-radius: 18px;
+      display: block;
+      box-shadow: 0 12px 36px rgba(0, 0, 0, .45);
+      cursor: crosshair;
+    }
+
+    .overlay {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none
+    }
+
+    .center {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+      text-align: center
+    }
+
+    .btn {
+      pointer-events: auto;
+      cursor: pointer;
+      user-select: none;
+      border: none;
+      outline: none;
+      font-weight: 800;
+      letter-spacing: .2px;
+      padding: 14px 20px;
+      border-radius: 14px;
+      background: linear-gradient(180deg, #8f75ff, #6a4bff);
+      color: white;
+      box-shadow: 0 12px 30px rgba(124, 92, 255, .35)
+    }
+
+    .btn:active {
+      transform: translateY(1px)
+    }
+
+    .hint {
+      color: var(--muted);
+      font-size: 14px
+    }
+
+    .badge {
+      position: absolute;
+      top: 18px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 12px;
+      letter-spacing: .4px;
+      opacity: .9;
+      background: rgba(0, 0, 0, .35);
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, .08)
+    }
+
+    .row {
+      margin-top: 14px
+    }
+
+    .ipt {
+      pointer-events: auto;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, .15);
+      background: rgba(0, 0, 0, .25);
+      color: var(--text);
+      padding: 10px 12px;
+      min-width: 240px
+    }
+
+    .table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0 8px;
+      margin-top: 14px
+    }
+
+    .table th {
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 700;
+      text-align: left;
+      padding: 0 8px
+    }
+
+    .table td {
+      padding: 10px 8px;
+      background: rgba(255, 255, 255, .04);
+      border-top: 1px solid rgba(255, 255, 255, .06);
+      border-bottom: 1px solid rgba(255, 255, 255, .06)
+    }
+
+    .table tr td:first-child {
+      border-left: 1px solid rgba(255, 255, 255, .06);
+      border-top-left-radius: 10px;
+      border-bottom-left-radius: 10px
+    }
+
+    .table tr td:last-child {
+      border-right: 1px solid rgba(255, 255, 255, .06);
+      border-top-right-radius: 10px;
+      border-bottom-right-radius: 10px
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <div class="card">
+      <div class="title">
+        <h1>Fruit Slice <span aria-hidden>🍉</span> + Bombs <span aria-hidden>💣</span></h1>
+        <div class="stat">
+          <div class="pill">ผู้เล่น: <span id="playerLabel">-</span></div>
+          <div class="pill">คะแนน: <span id="score">0</span></div>
+          <div class="pill">สูงสุด: <span id="best">0</span></div>
+          <div class="pill">ชีวิต: ∞ (ห้ามฟันระเบิด)</div>
+        </div>
+      </div>
+      <canvas id="game" aria-label="Fruit Slice game" role="img"></canvas>
+      <div class="badge">ลากเมาส์/นิ้วเพื่อฟันผลไม้ – <b>ห้ามฟันระเบิด</b>! ✂️💣</div>
+      <div class="overlay" id="overlay">
+        <div class="center">
+          <div style="font-size:clamp(18px,2.2vw,22px); font-weight:700">ตั้งชื่อผู้เล่นก่อนเริ่ม 📝</div>
+          <div class="row">
+            <input id="nameInput" class="ipt" placeholder="เช่น: PPP" maxlength="20" />
+          </div>
+          <button class="btn" id="startBtn" disabled>เริ่มเกม</button>
+          <div class="hint">Desktop: ลากเมาส์เร็ว ๆ เพื่อฟัน • มือถือ: ลากนิ้วบนจอ</div>
+        </div>
+      </div>
+
+      <div class="row">
+        <h3 style="margin:8px 8px 0; font-size:16px">🏆 สถิติผู้เล่นทั้งหมด (เครื่องนี้)</h3>
+        <table class="table" aria-label="สถิติผู้เล่นทั้งหมด">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>ผู้เล่น</th>
+              <th>คะแนนสูงสุด</th>
+              <th>จำนวนรอบ</th>
+              <th>คะแนนล่าสุด</th>
+              <th>อัปเดต</th>
+            </tr>
+          </thead>
+          <tbody id="boardBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (() => {
+      // ===== Basic refs =====
+      const canvas = document.getElementById('game');
+      const ctx = canvas.getContext('2d');
+      const scoreEl = document.getElementById('score');
+      const bestEl = document.getElementById('best');
+      const overlay = document.getElementById('overlay');
+      const startBtn = document.getElementById('startBtn');
+      const nameInput = document.getElementById('nameInput');
+      const playerLabel = document.getElementById('playerLabel');
+      const boardBody = document.getElementById('boardBody');
+
+      // ===== DPR-scaling canvas =====
+      let vw, vh, dpr;
+      function resize() {
+        const rect = canvas.getBoundingClientRect();
+        vw = Math.max(640, Math.floor(rect.width));
+        vh = Math.floor(vw / (16 / 9));
+        dpr = Math.min(window.devicePixelRatio || 1, 2);
+        canvas.width = Math.floor(vw * dpr);
+        canvas.height = Math.floor(vh * dpr);
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      }
+      window.addEventListener('resize', resize, { passive: true });
+      resize();
+
+      // ===== Leaderboard (local) =====
+      const LB_KEY = 'fruit_leaderboard_v3';
+      const BEST_KEY = 'fruit_best_global_v3';
+      function loadBoard() { try { return JSON.parse(localStorage.getItem(LB_KEY) || '[]'); } catch { return []; } }
+      function saveBoard(d) { localStorage.setItem(LB_KEY, JSON.stringify(d)); }
+      function renderBoard() {
+        const data = loadBoard().slice().sort((a, b) => b.best - a.best || a.name.localeCompare(b.name));
+        boardBody.innerHTML = data.map((p, i) => `<tr>
+      <td>${i + 1}</td><td>${p.name}</td><td>${p.best || 0}</td><td>${p.plays || 0}</td><td>${p.lastScore || 0}</td><td>${new Date(p.updatedAt || Date.now()).toLocaleString()}</td>
+    </tr>`).join('');
+      }
+
+      // ===== Game state =====
+      const state = {
+        running: false,
+        player: "",
+        score: 0,
+        best: Number(localStorage.getItem(BEST_KEY) || 0),
+        fruits: [],
+        halves: [],
+        splats: [],
+        decals: [], // คราบน้ำผลไม้บนฉากหลัง
+        popups: [], // คะแนนลอย
+        slashes: [], // แฟลชคมดาบ
+        trail: [],
+        spawnTimer: 0,
+        spawnInterval: 1100,
+        time: 0,
+        shake: 0,
+        audio: null,
+      };
+      bestEl.textContent = state.best;
+
+      // ===== Audio (WebAudio, เบา ๆ ไม่หน่วง) =====
+      function initAudio() {
+        if (state.audio) return;
+        const ac = new (window.AudioContext || window.webkitAudioContext)();
+        state.audio = ac;
+      }
+      function beep(freq = 600, t = 0.06, type = 'triangle', gain = 0.03) {
+        if (!state.audio) return; const ac = state.audio;
+        const o = ac.createOscillator(); const g = ac.createGain();
+        o.type = type; o.frequency.value = freq; g.gain.value = gain;
+        o.connect(g).connect(ac.destination); o.start(); g.gain.exponentialRampToValueAtTime(0.0001, ac.currentTime + t); o.stop(ac.currentTime + t);
+      }
+      function sfxSlice() { beep(740, 0.05, 'sawtooth', 0.03); beep(1180, 0.05, 'triangle', 0.02); }
+      function sfxBomb() { beep(120, 0.22, 'square', 0.06); setTimeout(() => beep(80, 0.25, 'sawtooth', 0.05), 40); }
+
+      // ===== Utils =====
+      const rand = (a, b) => Math.random() * (b - a) + a;
+      const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+
+      // ===== Entities =====
+      const FRUITS = [
+        { name: 'watermelon', color: '#2ecc71', juice: '#6effa1' },
+        { name: 'orange', color: '#ffa62b', juice: '#ffd18a' },
+        { name: 'blueberry', color: '#4f5bd5', juice: '#9aa8ff' },
+        { name: 'dragon', color: '#ff4d6d', juice: '#ffb3c1' },
+        { name: 'lemon', color: '#ffd43b', juice: '#fff4a3' },
+        { name: 'kiwi', color: '#8bc34a', juice: '#d1ff9e' }
+      ];
+
+      function spawnFruitOrBomb() {
+        const isBomb = Math.random() < Math.min(0.12 + state.score * 0.0025, 0.25);
+        if (isBomb) {
+          const radius = rand(22, 30);
+          const x = rand(60, vw - 60);
+          const y = vh + radius + rand(10, 40);
+          const speed = rand(11, 14);
+          const vy = -speed - rand(0, 6);
+          const vx = rand(-6, 6);
+          const rot = rand(0, Math.PI * 2);
+          const vr = rand(-0.12, 0.12);
+          state.fruits.push({ x, y, vx, vy, radius, rot, vr, isBomb: true, sliced: false });
+          return;
+        }
+        const type = FRUITS[Math.floor(Math.random() * FRUITS.length)];
+        const radius = rand(24, 36);
+        const x = rand(60, vw - 60);
+        const y = vh + radius + rand(10, 40);
+        const speed = rand(11, 14);
+        const vy = -speed - rand(0, 6);
+        const vx = rand(-6, 6);
+        const rot = rand(0, Math.PI * 2);
+        const vr = rand(-0.1, 0.1);
+        state.fruits.push({ x, y, vx, vy, radius, type, rot, vr, isBomb: false, sliced: false, shadow: rand(0.7, 1) });
+      }
+
+      function spawnSplat(x, y, color, count = 24) {
+        for (let i = 0; i < count; i++) {
+          const a = rand(0, Math.PI * 2);
+          const sp = rand(2, 8);
+          state.splats.push({ x, y, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp, r: rand(2, 4), life: 1, color });
+        }
+        // decal คราบยาว ๆ ติดฉาก
+        state.decals.push({ x, y, r: rand(18, 34), color, life: 1 });
+      }
+
+      function popup(x, y, txt) { state.popups.push({ x, y, txt, vy: -0.4, life: 1 }); }
+      function slashFlash(ax, ay, bx, by) { state.slashes.push({ ax, ay, bx, by, life: 1 }); }
+
+      // ===== Draw helpers =====
+      function drawFruit(f) {
+        ctx.save();
+        ctx.translate(f.x, f.y); ctx.rotate(f.rot);
+
+        if (f.isBomb) {
+          const g = ctx.createRadialGradient(-f.radius * 0.2, -f.radius * 0.2, f.radius * 0.2, 0, 0, f.radius);
+          g.addColorStop(0, '#4a4a4a'); g.addColorStop(1, '#0c0c0c');
+          ctx.fillStyle = g; ctx.beginPath(); ctx.arc(0, 0, f.radius, 0, Math.PI * 2); ctx.fill();
+          const blink = (Math.sin(state.time / 90) + 1) / 2; ctx.fillStyle = `rgba(255,60,60,${0.5 + blink * 0.5})`;
+          ctx.beginPath(); ctx.arc(0, -f.radius * 0.6, 5 + blink * 3, 0, Math.PI * 2); ctx.fill();
+          ctx.fillStyle = 'rgba(255,255,255,.9)'; ctx.beginPath(); ctx.moveTo(-8, 6); ctx.lineTo(0, -8); ctx.lineTo(8, 6); ctx.closePath(); ctx.fill();
+          ctx.fillStyle = '#0c0c0c'; ctx.beginPath(); ctx.arc(0, 2, 3, 0, Math.PI * 2); ctx.fill();
+          ctx.restore(); return;
+        }
+
+        // shadow
+        ctx.save(); ctx.globalAlpha = 0.25; ctx.scale(1, 0.3); ctx.beginPath(); ctx.arc(0, f.radius * 3.2, f.radius * 0.9, 0, Math.PI * 2); ctx.fillStyle = '#000'; ctx.fill(); ctx.restore();
+
+        const g = ctx.createRadialGradient(-f.radius * 0.2, -f.radius * 0.2, f.radius * 0.2, 0, 0, f.radius);
+        g.addColorStop(0, 'white'); g.addColorStop(1, f.type.color);
+        ctx.fillStyle = g; ctx.beginPath(); ctx.arc(0, 0, f.radius, 0, Math.PI * 2); ctx.fill();
+        ctx.beginPath(); ctx.ellipse(-f.radius * 0.3, -f.radius * 0.3, f.radius * 0.25, f.radius * 0.15, -0.7, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(255,255,255,.35)'; ctx.fill();
+        if (f.type && (f.type.name === 'kiwi' || f.type.name === 'watermelon')) {
+          ctx.fillStyle = 'rgba(0,0,0,.35)';
+          for (let i = 0; i < 8; i++) { const a = (i / 8) * Math.PI * 2; ctx.beginPath(); ctx.ellipse(Math.cos(a) * f.radius * 0.5, Math.sin(a) * f.radius * 0.5, 2, 4, a, 0, Math.PI * 2); ctx.fill(); }
+        }
+        ctx.restore();
+      }
+
+      function drawHalf(h) {
+        ctx.save(); ctx.translate(h.x, h.y); ctx.rotate(h.rot); ctx.globalAlpha = clamp(h.life, 0, 1);
+        const theta = h.angle; const start = theta + (h.side > 0 ? -Math.PI / 2 : Math.PI / 2); const end = theta + (h.side > 0 ? Math.PI / 2 : 3 * Math.PI / 2);
+        ctx.beginPath(); ctx.arc(0, 0, h.radius, start, end, h.side < 0); ctx.lineTo(0, 0); ctx.closePath(); ctx.clip();
+        const g = ctx.createRadialGradient(-h.radius * 0.2, -h.radius * 0.2, h.radius * 0.2, 0, 0, h.radius);
+        g.addColorStop(0, 'white'); g.addColorStop(1, h.type.color);
+        ctx.fillStyle = g; ctx.beginPath(); ctx.arc(0, 0, h.radius, 0, Math.PI * 2); ctx.fill();
+        ctx.globalAlpha = 0.9; ctx.strokeStyle = h.type.juice; ctx.lineWidth = 4; ctx.beginPath(); ctx.arc(0, 0, h.radius, start, end, h.side < 0); ctx.stroke();
+        ctx.globalAlpha = 1; ctx.restore();
+      }
+
+      function drawSplat(p) { ctx.globalAlpha = clamp(p.life, 0, 1); ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.fillStyle = p.color; ctx.fill(); ctx.globalAlpha = 1; }
+
+      function drawDecals() { // ฉากหลังคราบน้ำผลไม้
+        for (let i = state.decals.length - 1; i >= 0; i--) {
+          const d = state.decals[i]; d.life -= 0.002; if (d.life <= 0) { state.decals.splice(i, 1); continue; }
+          ctx.globalAlpha = 0.18 * d.life; ctx.beginPath(); ctx.arc(d.x, d.y, d.r, 0, Math.PI * 2); ctx.fillStyle = d.color; ctx.fill(); ctx.globalAlpha = 1;
+        }
+      }
+
+      function drawPopups() {
+        for (let i = state.popups.length - 1; i >= 0; i--) {
+          const p = state.popups[i]; p.y += p.vy; p.life -= 0.02; if (p.life <= 0) { state.popups.splice(i, 1); continue; }
+          ctx.globalAlpha = p.life; ctx.font = '700 18px system-ui,Segoe UI,Roboto'; ctx.fillStyle = '#fff'; ctx.fillText(p.txt, p.x, p.y); ctx.globalAlpha = 1;
+        }
+      }
+
+      function drawSlashes() {
+        for (let i = state.slashes.length - 1; i >= 0; i--) {
+          const s = state.slashes[i]; s.life -= 0.04; if (s.life <= 0) { state.slashes.splice(i, 1); continue; }
+          const { ax, ay, bx, by } = s; const alpha = s.life; const w = 22 * alpha;
+          ctx.save(); ctx.globalCompositeOperation = 'lighter';
+          ctx.strokeStyle = `rgba(255,255,255,${0.7 * alpha})`; ctx.lineWidth = w; ctx.lineCap = 'round'; ctx.beginPath(); ctx.moveTo(ax, ay); ctx.lineTo(bx, by); ctx.stroke();
+          ctx.strokeStyle = `rgba(124,92,255,${0.7 * alpha})`; ctx.lineWidth = w * 0.5; ctx.beginPath(); ctx.moveTo(ax, ay); ctx.lineTo(bx, by); ctx.stroke();
+          ctx.restore();
+        }
+      }
+
+      function lineCircleIntersect(ax, ay, bx, by, cx, cy, r) {
+        const abx = bx - ax, aby = by - ay; const t = clamp(((cx - ax) * abx + (cy - ay) * aby) / (abx * abx + aby * aby), 0, 1);
+        const px = ax + abx * t, py = ay + aby * t; const dx = px - cx, dy = py - cy; return (dx * dx + dy * dy) <= r * r;
+      }
+
+      // ===== Loop =====
+      function update(dt) {
+        state.time += dt; state.shake *= 0.92;
+
+        // spawn logic
+        state.spawnTimer -= dt; if (state.spawnTimer <= 0) { const n = Math.random() < 0.15 ? 2 : 1; for (let i = 0; i < n; i++) spawnFruitOrBomb(); const minInterval = 420; state.spawnInterval = clamp(1100 - state.score * 6, minInterval, 1100); state.spawnTimer = state.spawnInterval; }
+
+        // physics fruits
+        const g = 0.28;
+        for (let i = state.fruits.length - 1; i >= 0; i--) { const f = state.fruits[i]; f.vy += g; f.x += f.vx; f.y += f.vy; f.rot += f.vr || 0; if (f.y - f.radius > vh + 60) { state.fruits.splice(i, 1); } }
+
+        // halves physics
+        for (let i = state.halves.length - 1; i >= 0; i--) { const h = state.halves[i]; h.vy += g * 0.9; h.x += h.vx; h.y += h.vy; h.rot += h.vr; h.life -= 0.01; if (h.life <= 0 || h.y - h.radius > vh + 80) { state.halves.splice(i, 1); } }
+
+        // splats
+        for (let i = state.splats.length - 1; i >= 0; i--) { const p = state.splats[i]; p.vy += 0.18; p.x += p.vx; p.y += p.vy; p.life -= 0.01; if (p.life <= 0) state.splats.splice(i, 1); }
+
+        // trim trail
+        const keepMs = 160; for (let i = state.trail.length - 1; i >= 0; i--) { if (state.time - state.trail[i].t > keepMs) state.trail.splice(i, 1); }
+
+        // slice detection
+        if (state.trail.length >= 2) {
+          const segs = []; for (let i = 1; i < state.trail.length; i++) { const a = state.trail[i - 1], b = state.trail[i]; const dtp = Math.max(1, b.t - a.t); const speed = Math.hypot(b.x - a.x, b.y - a.y) / dtp; if (speed > 0.5) segs.push([a, b]); }
+          for (const f of state.fruits) {
+            if (f.sliced) continue; for (const [a, b] of segs) {
+              if (lineCircleIntersect(a.x, a.y, b.x, b.y, f.x, f.y, f.radius)) {
+                f.sliced = true; slashFlash(a.x, a.y, b.x, b.y); const dx = b.x - a.x, dy = b.y - a.y; const len = Math.max(1, Math.hypot(dx, dy)); const nx = dx / len, ny = dy / len; const px = -ny, py = nx;
+                if (f.isBomb) { spawnSplat(f.x, f.y, 'rgba(255,60,60,.9)', 160); spawnSplat(f.x, f.y, 'rgba(255,200,200,.8)', 100); state.shake = 16; sfxBomb(); endGame('bomb'); }
+                else { state.score += 1; scoreEl.textContent = state.score; spawnSplat(f.x, f.y, f.type.juice, 38); popup(f.x + 6, f.y - 10, '+1'); sfxSlice(); const base = { radius: f.radius, type: f.type, life: 1 }; state.halves.push({ x: f.x + px * 4, y: f.y + py * 4, vx: f.vx + px * 2 + nx * 0.6, vy: f.vy + py * 2 - 1, rot: f.rot, vr: (f.vr || 0) - 0.15, side: +1, angle: Math.atan2(py, px), ...base }); state.halves.push({ x: f.x - px * 4, y: f.y - py * 4, vx: f.vx - px * 2 + nx * 0.6, vy: f.vy - py * 2 - 1, rot: f.rot, vr: (f.vr || 0) + 0.15, side: -1, angle: Math.atan2(py, px), ...base }); }
+                state.fruits = state.fruits.filter(o => o !== f); break;
+              }
+            }
+          }
+        }
+      }
+
+      function draw() {
+        ctx.clearRect(0, 0, vw, vh);
+
+        // camera shake
+        ctx.save(); if (state.shake > 0) { ctx.translate((Math.random() - 0.5) * state.shake, (Math.random() - 0.5) * state.shake); }
+
+        // subtle grid background
+        const grid = 40; ctx.save(); ctx.globalAlpha = 0.05; for (let y = 0; y < vh; y += grid) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(vw, y); ctx.strokeStyle = '#fff'; ctx.lineWidth = 1; ctx.stroke(); } for (let x = 0; x < vw; x += grid) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, vh); ctx.strokeStyle = '#fff'; ctx.lineWidth = 1; ctx.stroke(); } ctx.restore();
+
+        drawDecals();
+        for (const p of state.splats) drawSplat(p);
+        for (const h of state.halves) drawHalf(h);
+        for (const f of state.fruits) drawFruit(f);
+        drawSlashes();
+
+        // sword trail (glow)
+        if (state.trail.length >= 2) { ctx.lineCap = 'round'; for (let i = 1; i < state.trail.length; i++) { const a = state.trail[i - 1], b = state.trail[i]; const age = (state.time - b.t); const alpha = clamp(1 - age / 140, 0, 1); const w = clamp(14 - age / 12, 2, 14); ctx.globalCompositeOperation = 'lighter'; ctx.strokeStyle = `rgba(255,255,255,${alpha})`; ctx.lineWidth = w; ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke(); ctx.strokeStyle = `rgba(124,92,255,${alpha * 0.7})`; ctx.lineWidth = w * 0.6; ctx.stroke(); ctx.globalCompositeOperation = 'source-over'; } }
+
+        drawPopups();
+
+        ctx.restore(); // end shake
+      }
+
+      // ===== Pointer =====
+      let pointerDown = false; function addPoint(x, y) { state.trail.push({ x, y, t: state.time }); }
+      function onPointerDown(e) { if (state.audio) state.audio.resume(); pointerDown = true; const r = canvas.getBoundingClientRect(); addPoint(e.clientX - r.left, e.clientY - r.top); }
+      function onPointerMove(e) { if (!pointerDown) return; const r = canvas.getBoundingClientRect(); addPoint(e.clientX - r.left, e.clientY - r.top); }
+      function onPointerUp() { pointerDown = false; }
+      canvas.addEventListener('pointerdown', onPointerDown); window.addEventListener('pointermove', onPointerMove); window.addEventListener('pointerup', onPointerUp);
+      canvas.addEventListener('touchstart', e => e.preventDefault(), { passive: false }); canvas.addEventListener('touchmove', e => e.preventDefault(), { passive: false });
+
+      // ===== Loop driver =====
+      let last = performance.now(); function loop(now) { const dt = Math.min(50, now - last); last = now; if (state.running) { update(dt); draw(); } requestAnimationFrame(loop); } requestAnimationFrame(loop);
+
+      // ===== Start/End =====
+      function startGame() { initAudio(); if (state.audio && state.audio.state === 'suspended') state.audio.resume(); state.running = true; state.score = 0; scoreEl.textContent = 0; state.fruits = []; state.splats = []; state.trail = []; state.halves = []; state.decals = []; state.popups = []; state.slashes = []; state.spawnTimer = 600; state.spawnInterval = 1100; state.time = 0; state.shake = 0; overlay.style.display = 'none'; playerLabel.textContent = state.player || '-'; }
+
+      function endGame(reason) {
+        state.running = false; state.fruits = []; const name = state.player; if (name) { const board = loadBoard(); const idx = board.findIndex(p => p.name === name); const now = new Date().toISOString(); if (idx === -1) { board.push({ name, best: state.score, plays: 1, lastScore: state.score, updatedAt: now }); } else { const p = board[idx]; p.best = Math.max(p.best || 0, state.score); p.plays = (p.plays || 0) + 1; p.lastScore = state.score; p.updatedAt = now; board[idx] = p; } saveBoard(board); renderBoard(); const globalBest = Math.max(...board.map(p => p.best || 0), 0); state.best = globalBest; localStorage.setItem(BEST_KEY, String(state.best)); bestEl.textContent = state.best; }
+        const msg = reason === 'bomb' ? 'โอ๊ย! ฟันโดนระเบิด 💥 (ห้ามฟันระเบิด)' : 'จบเกม!'; overlay.innerHTML = `<div class="center"><div style="font-size:clamp(18px,2.2vw,22px); font-weight:800">${msg}</div><div class="pill" style="font-weight:700">ผู้เล่น: ${state.player || '-'} • คะแนน: ${state.score} • สูงสุดรวม: ${state.best}</div><button class="btn" id="restartBtn">เล่นอีกครั้ง</button><div class="hint">Tip: ระวังระเบิดสีแดงกะพริบ ห้ามฟัน!</div></div>`; overlay.style.display = 'flex'; document.getElementById('restartBtn').addEventListener('click', startGame);
+      }
+
+      // ===== Board helpers =====
+      function loadBoard() { try { return JSON.parse(localStorage.getItem(LB_KEY) || '[]'); } catch { return []; } }
+      function saveBoard(data) { localStorage.setItem(LB_KEY, JSON.stringify(data)); localStorage.setItem(BEST_KEY, String(state.best)); }
+
+      // ===== UI =====
+      nameInput.addEventListener('input', () => { const v = nameInput.value.trim(); startBtn.disabled = !v; });
+      startBtn.addEventListener('click', () => { state.player = nameInput.value.trim().slice(0, 20) || 'Guest'; playerLabel.textContent = state.player; startGame(); });
+
+      // init
+      renderBoard();
+    })();
+  </script>
+</body>
+
+</html>

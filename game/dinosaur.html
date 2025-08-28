@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="th">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Dino Diamond Runner</title>
+  <style>
+    :root {
+      --bg: #f7f7f7;
+      --ground: #222;
+      --dino: #228B22;
+      --ob: #0b84a5;
+      --accent: #ffcc00
+    }
+
+    html,
+    body {
+      height: 100%;
+      margin: 0;
+      font-family: Inter, system-ui, Arial
+    }
+
+    .wrap {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      background: linear-gradient(#e8f0f6, #f7f7f7)
+    }
+
+    canvas {
+      background: linear-gradient(#fff, #eef6fb);
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(20, 30, 50, .12)
+    }
+
+    .ui {
+      width: 800px;
+      max-width: 95%;
+      margin-top: 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center
+    }
+
+    .btn {
+      background: #222;
+      color: white;
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer
+    }
+
+    .hint {
+      color: #555;
+      font-size: 14px
+    }
+
+    .backbtn {
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      background-color: #8690C1;
+      color: #141B3D;
+      font-family: 'Courier New', Courier, monospace;
+      font-weight: bold;
+      font-size: 20px;
+      border-color: #141B3D;
+      border-style: solid;
+      cursor: pointer;
+      border-radius: 30px;
+      border-width: 4px;
+      transition: opacity 0.5s;
+      padding: 20px 50px;
+    }
+
+    .backbtn:hover {
+      opacity: 0.75;
+    }
+
+    .backbtn:active {
+      opacity: 0.5;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <div>
+      <canvas id="game" width="800" height="220"></canvas>
+      <div class="ui">
+        <div class="hint">Space / Up arrow / Tap = กระโดด • แตะซ้ําเพื่อโดบเบิ้ลจัมป์</div>
+        <div>
+          <button id="restart" class="btn">เริ่มใหม่</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <button class="backbtn" onclick="location.href='../pages/games.html'">
+    ⟡ Back ⟡</button>
+
+  <script>
+    const canvas = document.getElementById('game');
+    const ctx = canvas.getContext('2d');
+    const W = canvas.width, H = canvas.height;
+
+    let lastTime = 0;
+    let gameSpeed = 4;
+    let gravity = 0.85;
+    let running = true;
+    let score = 0;
+    let highScore = 0;
+
+    // Dino character
+    const dino = {
+      x: 60, y: H - 40 - 40,
+      w: 44, h: 40,
+      vy: 0,
+      grounded: true,
+      jumps: 0,
+      maxJumps: 2
+    };
+
+    let obstacles = [];
+    let spawnTimer = 0;
+
+    function reset() {
+      obstacles = [];
+      spawnTimer = 0;
+      score = 0;
+      gameSpeed = 4;
+      dino.y = H - 40 - dino.h;
+      dino.vy = 0; dino.grounded = true; dino.jumps = 0;
+      running = true;
+    }
+
+    function spawnObstacle() {
+      const size = 18 + Math.random() * 30;
+      const obs = { x: W + 30, y: H - 40 - size / 2, size: size, passed: false };
+      obstacles.push(obs);
+    }
+
+    function update(dt) {
+      if (!running) return;
+      gameSpeed += dt * 0.0005;
+      dino.vy += gravity;
+      dino.y += dino.vy;
+      const groundY = H - 40 - dino.h;
+      if (dino.y >= groundY) { dino.y = groundY; dino.vy = 0; dino.grounded = true; dino.jumps = 0; } else { dino.grounded = false; }
+
+      spawnTimer -= dt * 0.06;
+      if (spawnTimer <= 0) { spawnObstacle(); spawnTimer = 60 + Math.random() * 80; }
+
+      for (let i = obstacles.length - 1; i >= 0; i--) {
+        const o = obstacles[i];
+        o.x -= gameSpeed;
+        if (!o.passed && o.x + o.size < dino.x) { o.passed = true; score += 1; }
+        if (o.x + o.size < -50) obstacles.splice(i, 1);
+      }
+
+      for (const o of obstacles) {
+        const dx = (o.x) - (dino.x + dino.w / 2);
+        const dy = (o.y) - (dino.y + dino.h / 2);
+        const dist = Math.hypot(dx, dy);
+        const r = Math.sqrt(2 * (o.size * o.size)) / 2;
+        const rr = Math.max(dino.w, dino.h) / 2;
+        if (dist < r + rr - 6) { running = false; if (score > highScore) highScore = score; }
+      }
+    }
+
+    function drawGround() {
+      ctx.fillStyle = '#222'; ctx.fillRect(0, H - 40, W, 40);
+      ctx.strokeStyle = '#444'; ctx.lineWidth = 2; ctx.beginPath();
+      for (let x = 0; x < W; x += 24) { ctx.moveTo(x, H - 40 + 8); ctx.lineTo(x + 12, H - 40 + 8); } ctx.stroke();
+    }
+
+    function drawDino() {
+      ctx.save(); ctx.translate(dino.x, dino.y);
+      // simple dinosaur shape
+      ctx.fillStyle = '#228B22';
+      ctx.beginPath(); ctx.moveTo(0, dino.h); ctx.lineTo(10, 0); ctx.lineTo(34, 0); ctx.lineTo(dino.w, dino.h); ctx.closePath(); ctx.fill();
+      // eye
+      ctx.fillStyle = '#fff'; ctx.fillRect(dino.w - 14, 8, 6, 6);
+      ctx.fillStyle = '#000'; ctx.fillRect(dino.w - 12, 10, 2, 2);
+      ctx.restore();
+    }
+
+    function drawDiamond(x, y, size, rot) {
+      ctx.save(); ctx.translate(x, y); ctx.rotate(rot);
+      const g = ctx.createLinearGradient(-size / 2, -size / 2, size / 2, size / 2);
+      g.addColorStop(0, '#8ef6ff'); g.addColorStop(1, '#0b84a5');
+      ctx.fillStyle = g; ctx.beginPath(); ctx.moveTo(0, -size / 2); ctx.lineTo(size / 2, 0); ctx.lineTo(0, size / 2); ctx.lineTo(-size / 2, 0); ctx.closePath(); ctx.fill();
+      ctx.strokeStyle = 'rgba(255,255,255,0.45)'; ctx.lineWidth = 1.2; ctx.stroke(); ctx.restore();
+    }
+
+    function draw(dt) {
+      ctx.clearRect(0, 0, W, H); drawBackground(); drawGround();
+      for (const o of obstacles) drawDiamond(o.x, o.y, o.size, Math.PI / 4);
+      drawDino();
+      ctx.fillStyle = '#333'; ctx.font = '18px system-ui'; ctx.fillText('คะแนน: ' + score, 12, 26); ctx.fillText('สูงสุด: ' + highScore, 12, 46);
+      if (!running) {
+        ctx.save(); ctx.fillStyle = 'rgba(0,0,0,0.45)'; ctx.fillRect(0, 0, W, H);
+        ctx.fillStyle = '#fff'; ctx.font = '28px system-ui'; ctx.textAlign = 'center';
+        ctx.fillText('เกมจบ! กด เริ่มใหม่ หรือ Space เพื่อเล่นใหม่', W / 2, H / 2 - 10);
+        ctx.restore();
+      }
+    }
+
+    function drawBackground() {
+      const t = performance.now() / 1000; for (let i = 0; i < 5; i++) {
+        const x = (t * 10 * (0.2 + i * 0.1) + i * 200) % (W + 200) - 100;
+        ctx.fillStyle = 'rgba(60,120,180,0.08)'; ctx.beginPath(); ctx.ellipse(x, 50 + i * 8, 40 + i * 6, 14 + i * 3, 0, 0, Math.PI * 2); ctx.fill();
+      }
+    }
+
+    function loop(ts) { if (!lastTime) lastTime = ts; const dt = ts - lastTime; lastTime = ts; update(dt); draw(dt); requestAnimationFrame(loop); }
+    function jump() { if (!running) { reset(); return; } if (dino.jumps < dino.maxJumps) { dino.vy = -13 - Math.min(score / 50, 6); dino.jumps += 1; dino.grounded = false; } }
+    window.addEventListener('keydown', e => { if (e.code === 'Space' || e.code === 'ArrowUp') { e.preventDefault(); jump(); } });
+    canvas.addEventListener('touchstart', e => { e.preventDefault(); jump(); }, { passive: false });
+    canvas.addEventListener('mousedown', e => { jump(); });
+    document.getElementById('restart').addEventListener('click', () => reset());
+    reset(); requestAnimationFrame(loop);
+  </script>
+</body>
+
+</html>

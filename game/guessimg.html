@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+  <meta charset="UTF-8">
+  <title>เกมทายภาพลับ</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 20px;
+    }
+
+    h1 {
+      color: #333;
+    }
+
+    .game-container {
+      max-width: 400px;
+      margin: 20px auto;
+    }
+
+    .image-container {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      margin-bottom: 15px;
+    }
+
+    .hidden-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      grid-template-rows: repeat(4, 1fr);
+      width: 100%;
+      height: 100%;
+    }
+
+    .block {
+      background-color: #888;
+      border: 1px solid #fff;
+      cursor: pointer;
+    }
+
+    .block.opened {
+      background-color: transparent;
+      pointer-events: none;
+    }
+
+    input[type="text"] {
+      padding: 8px;
+      width: 80%;
+      margin-bottom: 10px;
+    }
+
+    button {
+      padding: 8px 16px;
+      cursor: pointer;
+      margin: 5px;
+    }
+
+    #result {
+      margin-top: 10px;
+      font-weight: bold;
+    }
+
+    .victory-screen {
+      display: none;
+    }
+
+    .victory-screen h2 {
+      color: green;
+    }
+
+    .backbtn {
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      background-color: #8690C1;
+      color: #141B3D;
+      font-family: 'Courier New', Courier, monospace;
+      font-weight: bold;
+      font-size: 20px;
+      border-color: #141B3D;
+      border-style: solid;
+      cursor: pointer;
+      border-radius: 30px;
+      border-width: 4px;
+      transition: opacity 0.5s;
+      padding: 20px 50px;
+    }
+
+    .backbtn:hover {
+      opacity: 0.75;
+    }
+
+    .backbtn:active {
+      opacity: 0.5;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>🎯 เกมทายภาพลับ</h1>
+  <div class="game-container" id="gameScreen">
+    <div class="image-container">
+      <img id="secretImage" class="hidden-image" src="" alt="secret image">
+      <div class="overlay" id="overlayGrid"></div>
+    </div>
+    <input type="text" id="guessInput" placeholder="ทายว่าคือภาพอะไร...">
+    <button onclick="checkAnswer()">ส่งคำตอบ</button>
+    <p id="result"></p>
+  </div>
+
+  <!-- หน้าชนะ -->
+  <div class="victory-screen" id="victoryScreen">
+    <h2>🏆 ยินดีด้วย! คุณทายครบทุกภาพแล้ว!</h2>
+    <button onclick="replayGame()">🔁 เล่นใหม่</button>
+  </div>
+
+  <button class="backbtn" onclick="location.href='../pages/games.html'">
+    ⟡ Back ⟡</button>
+
+  <script>
+    const imageList = [
+      {
+        src: "https://mangainsider.com/wp-content/uploads/2022/03/Killua-hxh-Guide-1.png", // killua
+        answer: "killua"
+      },
+      {
+        src: "https://i.blogs.es/9c9ace/nobleza-flores/375_375.jpeg", // waguri
+        answer: "waguri"
+      },
+      {
+        src: "https://hinaboshi.com/rup/rupprakopwalidet/5448159688536091.jpg", // anya
+        answer: "anya"
+      },
+      {
+        src: "https://images.mein-mmo.de/medien/2025/06/Gachiakuta-Anime-Trailer-Screenshot-3-780x438.jpg", // rudo
+        answer: "rudo"
+      }
+    ];
+
+    const maxOpens = 5;
+    let opened = 0;
+    let currentIndex = 0;
+    let currentImages = [];
+    let correctAnswer = "";
+
+    const overlay = document.getElementById("overlayGrid");
+    const secretImage = document.getElementById("secretImage");
+    const guessInput = document.getElementById("guessInput");
+    const result = document.getElementById("result");
+    const gameScreen = document.getElementById("gameScreen");
+    const victoryScreen = document.getElementById("victoryScreen");
+
+    function shuffleArray(array) {
+      return array.sort(() => Math.random() - 0.5);
+    }
+
+    function createOverlayGrid() {
+      overlay.innerHTML = "";
+      opened = 0;
+
+      for (let i = 0; i < 16; i++) {
+        const block = document.createElement("div");
+        block.classList.add("block");
+        block.addEventListener("click", () => {
+          if (opened < maxOpens && !block.classList.contains("opened")) {
+            block.classList.add("opened");
+            opened++;
+          }
+        });
+        overlay.appendChild(block);
+      }
+    }
+
+    function loadImage(index) {
+      const current = currentImages[index];
+      secretImage.src = current.src;
+      correctAnswer = current.answer.toLowerCase();
+      guessInput.value = "";
+      result.textContent = "";
+      createOverlayGrid();
+    }
+
+    function checkAnswer() {
+      const userAnswer = guessInput.value.trim().toLowerCase();
+      if (!correctAnswer) return;
+
+      if (userAnswer === correctAnswer) {
+        result.textContent = "✅ ถูกต้อง!";
+        result.style.color = "green";
+        setTimeout(() => {
+          currentIndex++;
+          if (currentIndex < currentImages.length) {
+            loadImage(currentIndex);
+          } else {
+            showVictoryScreen();
+          }
+        }, 1000);
+      } else {
+        result.textContent = "❌ ผิด ลองใหม่!";
+        result.style.color = "red";
+      }
+    }
+
+    function showVictoryScreen() {
+      gameScreen.style.display = "none";
+      victoryScreen.style.display = "block";
+    }
+
+    function replayGame() {
+      currentImages = shuffleArray([...imageList]);
+      currentIndex = 0;
+      gameScreen.style.display = "block";
+      victoryScreen.style.display = "none";
+      loadImage(currentIndex);
+    }
+
+    // เริ่มเกมเมื่อโหลดหน้าเว็บ
+    window.onload = replayGame;
+  </script>
+</body>
+
+</html>

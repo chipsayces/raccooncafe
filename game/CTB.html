@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>เกมยิงลูกโป่ง</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      background: skyblue;
+      font-family: 'Arial', sans-serif;
+      touch-action: manipulation;
+    }
+
+    #gameArea {
+      width: 100vw;
+      height: 100vh;
+      position: relative;
+      background: linear-gradient(to top, #87ceeb, #ffffff);
+    }
+
+    .balloon {
+      width: 10vw;
+      height: 15vh;
+      background: red;
+      border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+      position: absolute;
+      bottom: 0;
+      animation: floatUp 3s linear forwards;
+      background-size: cover;
+      background-position: center;
+      cursor: pointer;
+    }
+
+    @keyframes floatUp {
+      0% {
+        transform: translateY(0);
+      }
+
+      100% {
+        transform: translateY(-100vh);
+      }
+    }
+
+    .pop-effect {
+      position: absolute;
+      width: 30px;
+      height: 30px;
+      background: radial-gradient(circle, yellow, orange, transparent);
+      border-radius: 50%;
+      pointer-events: none;
+      animation: pop 0.4s ease-out forwards;
+    }
+
+    @keyframes pop {
+      0% {
+        opacity: 1;
+        transform: scale(1);
+      }
+
+      100% {
+        opacity: 0;
+        transform: scale(3);
+      }
+    }
+
+    #score,
+    #timer,
+    #highScore {
+      position: absolute;
+      top: 10px;
+      font-size: 24px;
+      color: #333;
+      background: rgba(255, 255, 255, 0.7);
+      padding: 8px 16px;
+      border-radius: 8px;
+    }
+
+    #score {
+      left: 10px;
+    }
+
+    #timer {
+      right: 10px;
+    }
+
+    #highScore {
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    #gameOver {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 48px;
+      color: darkred;
+      background: rgba(255, 255, 255, 0.9);
+      padding: 30px;
+      border-radius: 20px;
+      display: none;
+      text-align: center;
+    }
+
+    #restartBtn {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 20px;
+      cursor: pointer;
+    }
+
+    .backbtn {
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      background-color: #8690C1;
+      color: #141B3D;
+      font-family: 'Courier New', Courier, monospace;
+      font-weight: bold;
+      font-size: 20px;
+      border-color: #141B3D;
+      border-style: solid;
+      cursor: pointer;
+      border-radius: 30px;
+      border-width: 4px;
+      transition: opacity 0.5s;
+      padding: 20px 50px;
+    }
+
+    .backbtn:hover {
+      opacity: 0.75;
+    }
+
+    .backbtn:active {
+      opacity: 0.5;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="gameArea">
+    <div id="score">คะแนน: 0</div>
+    <div id="highScore">คะแนนสูงสุด: 0</div>
+    <div id="timer">เวลา: 30</div>
+    <div id="gameOver">
+      ⏰ เกมจบ!<br />
+      คะแนนทั้งหมด: <span id="finalScore"></span><br />
+      <button id="restartBtn">เริ่มใหม่</button>
+    </div>
+  </div>
+
+  <button class="backbtn" onclick="location.href='../pages/games.html'">
+    ⟡ Back ⟡</button>
+
+  <!-- เสียงยิงลูกโป่ง -->
+  <audio id="popSound" src="https://freesound.org/data/previews/522/522815_10222327-lq.mp3"></audio>
+
+  <script>
+    const gameArea = document.getElementById("gameArea");
+    const scoreDisplay = document.getElementById("score");
+    const timerDisplay = document.getElementById("timer");
+    const highScoreDisplay = document.getElementById("highScore");
+    const gameOverDisplay = document.getElementById("gameOver");
+    const finalScoreSpan = document.getElementById("finalScore");
+    const restartBtn = document.getElementById("restartBtn");
+    const popSound = document.getElementById("popSound");
+
+    let score = 0;
+    let timeLeft = 30;
+    let timerInterval;
+    let balloonInterval = 1000;
+    let gameTimeout;
+    let highScore = localStorage.getItem("highScore") || 0;
+
+    highScoreDisplay.textContent = "คะแนนสูงสุด: " + highScore;
+
+    function createPopEffect(x, y) {
+      const effect = document.createElement("div");
+      effect.classList.add("pop-effect");
+      effect.style.left = `${x - 15}px`;
+      effect.style.top = `${y - 15}px`;
+      gameArea.appendChild(effect);
+
+      setTimeout(() => effect.remove(), 500);
+    }
+
+    function createBalloon() {
+      const balloon = document.createElement("div");
+      balloon.classList.add("balloon");
+
+      const x = Math.random() * (window.innerWidth - window.innerWidth * 0.1);
+      balloon.style.left = x + "px";
+
+      // ประเภทของลูกโป่ง
+      const typeChance = Math.random();
+
+      if (typeChance < 0.15) {
+        // ลูกโป่งปลอม (สีดำ)
+        balloon.style.background = "black";
+        balloon.dataset.type = "fake";
+      } else if (typeChance < 0.35) {
+        // ลูกโป่งโบนัส (สีทอง)
+        balloon.style.background = "gold";
+        balloon.dataset.type = "bonus";
+      } else if (typeChance < 0.6) {
+        // ลูกโป่งลายพิเศษ
+        balloon.style.backgroundImage = "url('https://i.imgur.com/qlsZ2Mf.png')";
+        balloon.dataset.type = "pattern";
+      } else {
+        // ลูกโป่งธรรมดา
+        balloon.dataset.type = "normal";
+      }
+
+      balloon.clicked = false;
+
+      const popBalloon = (e) => {
+        if (timeLeft > 0 && !balloon.clicked) {
+          balloon.clicked = true;
+          const type = balloon.dataset.type;
+
+          if (type === "bonus") score += 5;
+          else if (type === "fake") score -= 3;
+          else score += 1;
+
+          score = Math.max(0, score); // ห้ามคะแนนติดลบ
+          scoreDisplay.textContent = "คะแนน: " + score;
+
+          createPopEffect(e.clientX || e.touches?.[0].clientX, e.clientY || e.touches?.[0].clientY);
+
+          balloon.remove();
+          popSound.currentTime = 0;
+          popSound.play();
+        }
+      };
+
+      balloon.addEventListener("click", popBalloon);
+      balloon.addEventListener("touchstart", popBalloon);
+      balloon.addEventListener("animationend", () => {
+        if (balloon.parentNode) balloon.remove();
+      });
+
+      gameArea.appendChild(balloon);
+    }
+
+    function runBalloonGenerator() {
+      createBalloon();
+
+      if (balloonInterval > 400) {
+        balloonInterval -= 20;
+      }
+
+      gameTimeout = setTimeout(runBalloonGenerator, balloonInterval);
+    }
+
+    function startGame() {
+      score = 0;
+      timeLeft = 30;
+      balloonInterval = 1000;
+      scoreDisplay.textContent = "คะแนน: 0";
+      timerDisplay.textContent = "เวลา: 30";
+      gameOverDisplay.style.display = "none";
+
+      runBalloonGenerator();
+
+      timerInterval = setInterval(() => {
+        timeLeft--;
+        timerDisplay.textContent = "เวลา: " + timeLeft;
+        if (timeLeft <= 0) endGame();
+      }, 1000);
+    }
+
+    function endGame() {
+      clearInterval(timerInterval);
+      clearTimeout(gameTimeout);
+      document.querySelectorAll(".balloon").forEach(b => b.remove());
+
+      if (score > highScore) {
+        highScore = score;
+        localStorage.setItem("highScore", highScore);
+        highScoreDisplay.textContent = "คะแนนสูงสุด: " + highScore;
+      }
+
+      finalScoreSpan.textContent = score;
+      gameOverDisplay.style.display = "block";
+    }
+
+    restartBtn.addEventListener("click", startGame);
+
+    // เริ่มเกม
+    startGame();
+  </script>
+</body>
+
+</html>

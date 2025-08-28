@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+  <meta charset="UTF-8">
+  <title>เกมจับคู่ความจำ 2 ผู้เล่น</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f8f8f8;
+      text-align: center;
+      margin: 20px;
+    }
+
+    h1 {
+      color: #333;
+    }
+
+    #controls {
+      margin: 10px auto;
+    }
+
+    #stats {
+      display: flex;
+      justify-content: space-around;
+      flex-wrap: wrap;
+      margin: 15px 0;
+      font-size: 18px;
+    }
+
+    .player-panel {
+      background: #fff;
+      padding: 10px 15px;
+      border-radius: 12px;
+      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+      min-width: 200px;
+    }
+
+    .active {
+      border: 2px solid #3498db;
+    }
+
+    #game-board {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+      gap: 12px;
+      justify-content: center;
+      margin: 20px auto;
+      max-width: 800px;
+    }
+
+    .card {
+      aspect-ratio: 1/1;
+      background-color: #3498db;
+      color: white;
+      font-size: 40px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 12px;
+      cursor: pointer;
+      user-select: none;
+      transition: transform 0.4s, background-color 0.3s;
+    }
+
+    .flipped {
+      background-color: #ecf0f1;
+      color: #2c3e50;
+      transform: rotateY(180deg);
+    }
+
+    .matched {
+      background-color: #2ecc71;
+      color: white;
+      cursor: default;
+    }
+
+    select,
+    button {
+      padding: 8px 12px;
+      font-size: 16px;
+      margin: 5px;
+      border: none;
+      border-radius: 5px;
+    }
+
+    #reset-btn {
+      background-color: #e67e22;
+      color: white;
+      cursor: pointer;
+    }
+
+    #reset-btn:hover {
+      background-color: #d35400;
+    }
+
+    .backbtn {
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      background-color: #8690C1;
+      color: #141B3D;
+      font-family: 'Courier New', Courier, monospace;
+      font-weight: bold;
+      font-size: 20px;
+      border-color: #141B3D;
+      border-style: solid;
+      cursor: pointer;
+      border-radius: 30px;
+      border-width: 4px;
+      transition: opacity 0.5s;
+      padding: 20px 50px;
+    }
+
+    .backbtn:hover {
+      opacity: 0.75;
+    }
+
+    .backbtn:active {
+      opacity: 0.5;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h1>🧠 เกมจับคู่ความจำ 2 ผู้เล่น</h1>
+
+  <div id="controls">
+    <label for="difficulty">เลือกระดับความยาก: </label>
+    <select id="difficulty">
+      <option value="easy">ง่าย</option>
+      <option value="medium" selected>ปานกลาง</option>
+      <option value="hard">ยาก</option>
+    </select>
+    <button id="reset-btn">เริ่มเกมใหม่</button>
+  </div>
+
+  <div id="stats">
+    <div id="player1" class="player-panel">
+      <h3>ผู้เล่น 1 👤</h3>
+      คะแนน: <span id="score1">0</span><br>
+      เลือกคู่: <span id="pairs1">0</span><br>
+      เวลา: <span id="time1">0</span> วิ
+    </div>
+    <div id="player2" class="player-panel">
+      <h3>ผู้เล่น 2 👤</h3>
+      คะแนน: <span id="score2">0</span><br>
+      เลือกคู่: <span id="pairs2">0</span><br>
+      เวลา: <span id="time2">0</span> วิ
+    </div>
+  </div>
+
+  <button class="backbtn" onclick="location.href='../pages/games.html'">
+    ⟡ Back ⟡</button>
+
+  <div id="game-board"></div>
+
+  <script>
+    const symbols = ['🍎', '🍌', '🍇', '🍓', '🍍', '🍒', '🥝', '🍉'];
+    const board = document.getElementById('game-board');
+    const resetButton = document.getElementById('reset-btn');
+    const difficultySelect = document.getElementById('difficulty');
+
+    let cards = [];
+    let flippedCards = [];
+    let matchedPairs = 0;
+
+    // เก็บข้อมูลผู้เล่น
+    let players = [
+      { score: 0, pairs: 0, time: 0 },
+      { score: 0, pairs: 0, time: 0 }
+    ];
+    let currentPlayer = 0;
+    let timers = [null, null];
+
+    function shuffle(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
+
+    function createBoard() {
+      let pairCount = 8; // default medium
+      if (difficultySelect.value === "easy") pairCount = 6;
+      if (difficultySelect.value === "hard") pairCount = 10;
+
+      const chosenSymbols = symbols.slice(0, pairCount);
+      cards = shuffle([...chosenSymbols, ...chosenSymbols]);
+
+      board.innerHTML = '';
+      cards.forEach(symbol => {
+        const card = document.createElement('div');
+        card.classList.add('card');
+        card.dataset.symbol = symbol;
+        card.textContent = '';
+        card.addEventListener('click', handleFlip);
+        board.appendChild(card);
+      });
+    }
+
+    function handleFlip(e) {
+      const card = e.currentTarget;
+
+      if (
+        card.classList.contains('flipped') ||
+        card.classList.contains('matched') ||
+        flippedCards.length === 2
+      ) {
+        return;
+      }
+
+      card.textContent = card.dataset.symbol;
+      card.classList.add('flipped');
+      flippedCards.push(card);
+
+      if (flippedCards.length === 2) {
+        players[currentPlayer].pairs++; // จับคู่ 1 ครั้ง
+        updateStats();
+        setTimeout(checkMatch, 600);
+      }
+    }
+
+    function checkMatch() {
+      const [card1, card2] = flippedCards;
+
+      if (card1.dataset.symbol === card2.dataset.symbol) {
+        card1.classList.add('matched');
+        card2.classList.add('matched');
+        matchedPairs++;
+        players[currentPlayer].score += 100;
+      } else {
+        players[currentPlayer].score -= 50;
+        card1.classList.remove('flipped');
+        card2.classList.remove('flipped');
+        card1.textContent = '';
+        card2.textContent = '';
+        switchTurn();
+      }
+
+      flippedCards = [];
+      updateStats();
+      checkEndGame();
+    }
+
+    function switchTurn() {
+      clearInterval(timers[currentPlayer]);
+      document.getElementById("player" + (currentPlayer + 1)).classList.remove("active");
+
+      currentPlayer = currentPlayer === 0 ? 1 : 0;
+
+      startTimer();
+      document.getElementById("player" + (currentPlayer + 1)).classList.add("active");
+    }
+
+    function startTimer() {
+      timers[currentPlayer] = setInterval(() => {
+        players[currentPlayer].time++;
+        updateStats();
+      }, 1000);
+    }
+
+    function updateStats() {
+      document.getElementById('score1').textContent = players[0].score;
+      document.getElementById('pairs1').textContent = players[0].pairs;
+      document.getElementById('time1').textContent = players[0].time;
+
+      document.getElementById('score2').textContent = players[1].score;
+      document.getElementById('pairs2').textContent = players[1].pairs;
+      document.getElementById('time2').textContent = players[1].time;
+    }
+
+    function checkEndGame() {
+      if (matchedPairs === cards.length / 2) {
+        clearInterval(timers[0]);
+        clearInterval(timers[1]);
+
+        // ตัดสินผู้ชนะ
+        let p1 = players[0];
+        let p2 = players[1];
+        let criteria1 = (p1.pairs < p2.pairs) ? 1 : (p1.pairs > p2.pairs ? 2 : 0);
+        let criteria2 = (p1.score > p2.score) ? 1 : (p1.score < p2.score ? 2 : 0);
+        let criteria3 = (p1.time < p2.time) ? 1 : (p1.time > p2.time ? 2 : 0);
+
+        let wins = [0, 0];
+        [criteria1, criteria2, criteria3].forEach(c => { if (c) wins[c - 1]++; });
+
+        let message = "";
+        if (wins[0] > wins[1]) message = "🎉 ผู้เล่น 1 ชนะ!";
+        else if (wins[1] > wins[0]) message = "🎉 ผู้เล่น 2 ชนะ!";
+        else message = "🤝 เสมอกัน!";
+
+        setTimeout(() => alert(message), 300);
+      }
+    }
+
+    function resetGame() {
+      matchedPairs = 0;
+      flippedCards = [];
+      players = [
+        { score: 0, pairs: 0, time: 0 },
+        { score: 0, pairs: 0, time: 0 }
+      ];
+      currentPlayer = 0;
+      clearInterval(timers[0]); clearInterval(timers[1]);
+
+      updateStats();
+      createBoard();
+
+      document.getElementById("player1").classList.add("active");
+      document.getElementById("player2").classList.remove("active");
+      startTimer();
+    }
+
+    resetButton.addEventListener('click', resetGame);
+    window.addEventListener('load', resetGame);
+  </script>
+
+</body>
+
+</html>

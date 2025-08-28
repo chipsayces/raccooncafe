@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Raccoon Cafe - Yummers</title>
+    <style>
+        body {
+            background-color: #CCD0E6;
+            background-image: url("../images/Purplebg2.jpg");
+            color: #141B3D;
+            background-size: cover;
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: bold;
+            margin: 0;
+        }
+
+        .navbar {
+            background-color: #8690C1;
+            display: flex;
+            /*for horizontal layout*/
+            justify-content: space-between;
+            /*makes the logo stick to the left N the menu to the right*/
+            align-items: center;
+            padding: 10px 20px;
+        }
+
+        .navbar ul {
+            list-style: none;
+            /* erases the bullet points*/
+            display: flex;
+            margin: 0;
+            padding: 15px;
+        }
+
+        .navbar ul li {
+            margin: 0 15px;
+            /* distance between items*/
+        }
+
+        .navbar ul li a {
+            text-decoration: none;
+            font-size: large;
+            font-weight: bolder;
+            padding: 6px 6px;
+            border-radius: 6px;
+            transition: background 0.3s;
+            color: #141B3D;
+        }
+
+        .navbar ul li a:hover {
+            background-color: rgb(95, 107, 167);
+        }
+
+        .navbar .logo {
+            font-weight: bolder;
+            color: #141B3D;
+            font-size: large;
+            margin: 0;
+        }
+
+        .headers {
+            margin-left: 20px;
+        }
+
+        .headers h1 {
+            font-weight: bold;
+            font-size: 30px;
+            margin-top: 30px;
+        }
+
+        .game1btn {
+            margin-left: 20px;
+            margin-top: 50px;
+            background-color: #8690C1;
+            color: #141B3D;
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: bold;
+            font-size: 20px;
+            border-color: #141B3D;
+            border-style: solid;
+            cursor: pointer;
+            border-radius: 30px;
+            border-width: 4px;
+            transition: opacity 0.5s;
+            padding: 20px 50px;
+        }
+
+        .game1btn:hover {
+            opacity: 0.75;
+        }
+
+        .game1btn:active {
+            opacity: 0.5;
+        }
+
+        .game1btn {
+            margin-left: 20px;
+            margin-top: 50px;
+            background-color: #8690C1;
+            color: #141B3D;
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: bold;
+            font-size: 20px;
+            border-color: #141B3D;
+            border-style: solid;
+            cursor: pointer;
+            border-radius: 30px;
+            border-width: 4px;
+            transition: opacity 0.5s;
+            padding: 20px 50px;
+        }
+
+        .game1btn:hover {
+            opacity: 0.75;
+        }
+
+        .game1btn:active {
+            opacity: 0.5;
+        }
+
+        .game2btn {
+            margin-left: 20px;
+            margin-top: 50px;
+            background-color: #8690C1;
+            color: #141B3D;
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: bold;
+            font-size: 20px;
+            border-color: #141B3D;
+            border-style: solid;
+            cursor: pointer;
+            border-radius: 30px;
+            border-width: 4px;
+            transition: opacity 0.5s;
+            padding: 20px 50px;
+        }
+
+        .game2btn:hover {
+            opacity: 0.75;
+        }
+
+        .game2btn:active {
+            opacity: 0.5;
+        }
+
+        .game3btn {
+            margin-left: 20px;
+            margin-top: 50px;
+            background-color: #8690C1;
+            color: #141B3D;
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: bold;
+            font-size: 20px;
+            border-color: #141B3D;
+            border-style: solid;
+            cursor: pointer;
+            border-radius: 30px;
+            border-width: 4px;
+            transition: opacity 0.5s;
+            padding: 20px 50px;
+        }
+
+        .game3btn:hover {
+            opacity: 0.75;
+        }
+
+        .game3btn:active {
+            opacity: 0.5;
+        }
+
+        .game4btn {
+            margin-left: 20px;
+            margin-top: 50px;
+            background-color: #8690C1;
+            color: #141B3D;
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: bold;
+            font-size: 20px;
+            border-color: #141B3D;
+            border-style: solid;
+            cursor: pointer;
+            border-radius: 30px;
+            border-width: 4px;
+            transition: opacity 0.5s;
+            padding: 20px 50px;
+        }
+
+        .game4btn:hover {
+            opacity: 0.75;
+        }
+
+        .game4btn:active {
+            opacity: 0.5;
+        }
+
+        .game5btn {
+            margin-left: 20px;
+            margin-top: 50px;
+            background-color: #8690C1;
+            color: #141B3D;
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: bold;
+            font-size: 20px;
+            border-color: #141B3D;
+            border-style: solid;
+            cursor: pointer;
+            border-radius: 30px;
+            border-width: 4px;
+            transition: opacity 0.5s;
+            padding: 20px 50px;
+        }
+
+        .game5btn:hover {
+            opacity: 0.75;
+        }
+
+        .game5btn:active {
+            opacity: 0.5;
+        }
+
+        .game6btn {
+            margin-left: 20px;
+            margin-top: 50px;
+            background-color: #8690C1;
+            color: #141B3D;
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: bold;
+            font-size: 20px;
+            border-color: #141B3D;
+            border-style: solid;
+            cursor: pointer;
+            border-radius: 30px;
+            border-width: 4px;
+            transition: opacity 0.5s;
+            padding: 20px 50px;
+        }
+
+        .game6btn:hover {
+            opacity: 0.75;
+        }
+
+        .game6btn:active {
+            opacity: 0.5;
+        }
+
+        .game7btn {
+            margin-left: 20px;
+            margin-top: 50px;
+            background-color: #8690C1;
+            color: #141B3D;
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: bold;
+            font-size: 20px;
+            border-color: #141B3D;
+            border-style: solid;
+            cursor: pointer;
+            border-radius: 30px;
+            border-width: 4px;
+            transition: opacity 0.5s;
+            padding: 20px 50px;
+        }
+
+        .game7btn:hover {
+            opacity: 0.75;
+        }
+
+        .game7btn:active {
+            opacity: 0.5;
+        }
+
+        p img {
+            margin-left: 10%;
+            margin-top: 50px;
+            height: 300px;
+            width: 1200px;
+            border-style: solid;
+            border-color: #8690C1;
+            border-width: 10px;
+            border-radius: 50px;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="logo">I LOVE RACCOONS ⸜(｡˃ ᵕ ˂ )⸝♡</div>
+        <ul>
+            <li><a href="../index.html">Home</a></li>
+            <li><a href="about.html">About us</a></li>
+            <li><a href="menu.html">Menu</a></li>
+            <li><a href="shop.html">Shop</a></li>
+            <li><a href="meet.html">Meet the Racs</a></li>
+            <li><a href="gallery.html">Gallery</a></li>
+            <li><a href="news.html">News</a></li>
+            <li><a href="games.html">Games</a></li>
+        </ul>
+    </nav>
+
+
+    <main>
+        <section>
+            <div class="headers">
+                <h1>⋆˚࿔ Games ⋆˚࿔ ------------------------------------------------</h1>
+                <h2>Play some fun games made by our saturday team! ── .✦</h2>
+            </div>
+
+        </section>
+        <button class="game1btn" onclick="location.href='../game/CTB.html'">
+            ⟡ Click the ball ⟡</button>
+        <button class="game2btn" onclick="location.href='../game/dinosaur.html'">
+            ⟡ Dinosaur ⟡</button>
+        <button class="game3btn" onclick="location.href='../game/fruitslice.html'">
+            ⟡ Fruit slice ⟡</button>
+        <button class="game4btn" onclick="location.href='../game/guessimg.html'">
+            ⟡ Guess the image ⟡</button>
+        <button class="game5btn" onclick="location.href='../game/memory-flip.html'">
+            ⟡ Memory flip ⟡</button>
+        <button class="game6btn" onclick="location.href='../game/PMGv1.html'">
+            ⟡ Stickman platform v1 ⟡</button>
+        <button class="game7btn" onclick="location.href='../game/PMGv2.html'">
+            ⟡ Stickman platform v2 ⟡</button>
+        <p>
+            <img src="../images/Rac_Banner.jpeg" width="500px" alt="Raccoon">
+        </p>
+        <section>
+
+    </main>
+</body>
+
+</html>
